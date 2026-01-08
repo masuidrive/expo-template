@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'Lint: No linter configured yet'",
+    "test": "echo 'Test: No tests configured yet'",
+    "verify": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
     "expo": "~54.0.31",

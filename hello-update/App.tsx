@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 export default function App() {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Hello World v3</Text>
+      <Text>Hello World v4</Text>
     </View>
   );
 }

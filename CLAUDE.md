@@ -43,3 +43,9 @@ npx eas update --branch dev --message "description"
 - Permissions
 - Native modules
 - Package name / app icon
+
+## cc4w policy
+
+- Do: implement changes, run `npm ci` and `npm run verify`, open PR from claude/* or features/*
+- Don't: run `eas build`, `eas update`, or `expo start`
+- Don't: store secrets
