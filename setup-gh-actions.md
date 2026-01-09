@@ -1,17 +1,14 @@
 # GitHub Actions Setup for Expo EAS
 
----
-以下、「cc4w が claude/* or features/* ブランチを作ってPR」→「main に merge されたら GitHub Actions が EAS で Android build」まで、ゼロからの設定手順をエンジニア向けにまとめる。
+以下、「claude/* or features/* ブランチを作ってPR」→「main に merge されたら GitHub Actions が EAS で Android build」まで、ゼロからの設定手順をエンジニア向けにまとめる。
 （トークン取得手順は Expo 公式ドキュメント準拠）
-
----
 
 ## ゴール
 
 - PR は claude/* と features/* から作る
 - PR 作成・更新時は lint/typecheck/test（速い）
 - main への merge 時だけ eas build -p android を実行（重い・回数制限あり）
-- Expo の認証は GitHub Secrets の EXPO_TOKEN で行う（cc4w/ローカルに置かない）
+- Expo の認証は GitHub Secrets の EXPO_TOKEN で行う（Claude Code/ローカルに置かない）
 
 ---
 
@@ -23,11 +20,11 @@
 
 ---
 
-## 1. ブランチ運用（cc4w 側）
+## 1. ブランチ運用（Claude Code 側）
 
-cc4w が勝手に命名するのを避けたいなら、作業指示でブランチ名を固定するのが確実。
+Claude Code が勝手に命名するのを避けたいなら、作業指示でブランチ名を固定するのが確実。
 
-例（cc4wへの指示文）:
+例（Claude Codeへの指示文）:
 - 「features/intent-hello ブランチを作って変更してPR作って」
 - 「claude/lint-fix ブランチで…」
 
@@ -37,7 +34,7 @@ GitHub 側は「特定プレフィックス以外の push を禁止」までは�
 
 ## 2. package.json に verify を用意（PRで回す）
 
-cc4w/Actions 共通のゲートを固定する。
+Claude Code/Actions 共通のゲートを固定する。
 
 ```json
 {
@@ -224,12 +221,12 @@ jobs:
 
 ---
 
-## 7. cc4w を "syntax check要員" に固定する
+## 7. Claude Code を "syntax check要員" に固定する
 
-リポジトリ直下 CLAUDE.md にこれを書いておくと、cc4wがEAS叩いたりしにくくなる。
+リポジトリ直下 CLAUDE.md にこれを書いておくと、Claude CodeがEAS叩いたりしにくくなる。
 
 ```markdown
-## cc4w policy
+## Claude Code policy
 - Do: implement changes, run `npm ci` and `npm run verify`, open PR from claude/* or features/*
 - Don't: run `eas build`, `eas update`, or `expo start`
 - Don't: store secrets
@@ -237,4 +234,6 @@ jobs:
 
 ---
 
-必要なら、あなたの eas.json（profile名）と package manager（npm/pnpm/yarn）に合わせて、上の2つのworkflowをそのままコミットできる形に調整して出す。
+### 8. GitHub連携
+
+CLIで `/install-github-app` を実行すると、GitHub連携が行われGitHub Issuesに `@claude 実装して` と書くだけで実装されるようになることをユーザに説明すること

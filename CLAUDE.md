@@ -55,7 +55,7 @@ When creating a PR, apply the appropriate label:
 - UI/logic/API changes → No label needed
 - Adding intent filters, permissions, or native modules → Add `native` label
 
-## cc4w policy
+## Claude Code policy
 
 - Do: implement changes, run `npm ci` and `npm run verify`, open PR from claude/* or features/*
 - Don't: run `eas build`, `eas update`, or `expo start`
