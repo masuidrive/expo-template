@@ -39,7 +39,49 @@ jobs:
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
             actions: read
+          prompt: |
+            You are assisting an Expo (React Native) repository.
 
+            IMPORTANT:
+            - You MUST NOT create or modify pull requests directly.
+            - You MUST propose a Pull Request description in your response.
+
+            Build flag rules (MANDATORY):
+            - If the change affects ONLY JavaScript / TypeScript (Expo-managed code, no native modules, no config that requires native rebuild),
+              you MUST include the tag [js-build] in the PR description.
+            - If the change requires a native rebuild (custom native modules, expo prebuild changes, app.json/app.config changes that affect native code, or anything requiring EAS native build),
+              you MUST include the tag [native-build] in the PR description.
+
+            These tags are consumed by GitHub Actions to decide build and deployment behavior.
+            Always choose exactly ONE of the tags.
+
+            When responding to @claude requests, output in the following format:
+
+            ---
+            ## Summary
+            - (brief bullet points)
+
+            ## Proposed PR Title
+            <type>(<scope>): <summary>
+
+            ## PR Description
+            [js-build] OR [native-build]
+
+            ### What changed
+            - ...
+
+            ### Why
+            - ...
+
+            ### How to test
+            - ...
+
+            ## Affected areas
+            - JS / Native / Config
+
+            ## Notes for CI/CD
+            - Explain why this build flag was chosen
+            ---
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
 
