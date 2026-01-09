@@ -2,7 +2,7 @@
   "expo": {
     "name": "hello-update",
     "slug": "hello-update",
-    "version": "1.0.0",
+    "version": "10",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
