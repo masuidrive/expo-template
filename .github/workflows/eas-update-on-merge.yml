@@ -1,4 +1,4 @@
-name: EAS Build Android (on merge to main)
+name: EAS Update (on merge to main)
 
 on:
   pull_request:
@@ -6,17 +6,16 @@ on:
     branches: [main]
 
 jobs:
-  build_android:
-    # Run only if PR was merged AND has 'native' label
+  eas_update:
+    # Run only if PR was merged AND doesn't have 'native' label
     if: |
       github.event.pull_request.merged == true &&
-      contains(github.event.pull_request.labels.*.name, 'native')
+      !contains(github.event.pull_request.labels.*.name, 'native')
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: hello-update
     steps:
-      # merge 後の main をビルドしたいので main をcheckout
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -28,9 +27,8 @@ jobs:
           cache-dependency-path: hello-update/package-lock.json
 
       - run: npm ci
-      - run: npm run verify
 
-      - name: EAS Build (Android)
-        run: npx eas-cli@latest build -p android --profile dev --non-interactive
+      - name: EAS Update (JS bundle to dev channel)
+        run: npx eas-cli@latest update --branch dev --message "Deployed from main after PR #${{ github.event.pull_request.number }}" --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

@@ -103,9 +103,52 @@ jobs:
 - claude/* と features/* の push で常にゲートが走る
 - PR でも main 向けに verify される
 
-### 4-2) main へ merge されたら Android build（重い）
+### 4-2) main へ merge されたら EAS Update（軽い・推奨）
 
-「PR が main に merge された」＝pull_request: closed で merged == true を見る。
+JS変更のみの場合は `eas update` でOTA配信（既存Dev Clientに即配信）。
+
+`.github/workflows/eas-update-on-merge.yml`
+
+```yaml
+name: EAS Update (on merge to main)
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  eas_update:
+    # Run only if PR was merged AND doesn't have 'native' label
+    if: |
+      github.event.pull_request.merged == true &&
+      !contains(github.event.pull_request.labels.*.name, 'native')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-update
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: hello-update/package-lock.json
+
+      - run: npm ci
+
+      - name: EAS Update (JS bundle to dev channel)
+        run: npx eas-cli@latest update --branch dev --message "Deployed from main after PR #${{ github.event.pull_request.number }}" --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+```
+
+### 4-3) main へ merge + `native` ラベル付きなら Android build（重い）
+
+ネイティブ変更時のみ `eas build` を実行（PRに `native` ラベルを付ける）。
 
 `.github/workflows/eas-build-android-on-merge.yml`
 
@@ -119,8 +162,14 @@ on:
 
 jobs:
   build_android:
-    if: github.event.pull_request.merged == true
+    # Run only if PR was merged AND has 'native' label
+    if: |
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'native')
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-update
     steps:
       # merge 後の main をビルドしたいので main をcheckout
       - uses: actions/checkout@v4
@@ -131,6 +180,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: hello-update/package-lock.json
 
       - run: npm ci
       - run: npm run verify
@@ -142,8 +192,9 @@ jobs:
 ```
 
 ポイント:
-- eas-cli は プロジェクト依存に入れないのが推奨（Actionで npx eas-cli@latest が無難）。
+- eas-cli は プロジェクト依存に入れないのが推奨（Actionで npx eas-cli@latest が無難）
 - --profile dev はあなたの eas.json に合わせて変える（例: preview）
+- PRに `native` ラベルを付けない限り、`eas update` のみが実行される（コスト削減）
 
 ---
 
@@ -159,15 +210,16 @@ jobs:
 
 ## 6. Free枠を守る運用（重要）
 
-merge ごと build は、開発が活発だと Androidビルド回数を消費しやすい。
-運用としては：
+上記のワークフロー設定により、コストを最適化：
 
-- **JS だけ変更**: main merge → 本当は eas update の方が安い
-- **ネイティブ変更（intentFilters/permissions/native modules）**: main merge → eas build
+- **JS変更のみ（ラベルなし）**: `eas update` のみ実行 → 無料・高速・既存アプリに即配信
+- **ネイティブ変更（`native`ラベル付き）**: `eas build` を実行 → ビルド回数を消費
 
-もしこの方針にするなら、「merge時build」をやめて
-- merge時は eas update
-- native ラベルが付いた PR merge 時だけ eas build に切り替えるのが一番コストが安定する（必要ならそのYAMLも出す）。
+### PR作成時のルール:
+1. UI/ロジック/API変更 → ラベル不要（デフォルトで `eas update`）
+2. intent handlers、permissions、native modules追加 → `native` ラベルを付ける
+
+これにより、不要なビルドを防ぎ、Free枠を効率的に使えます。
 
 ---
 

@@ -44,6 +44,17 @@ npx eas update --branch dev --message "description"
 - Native modules
 - Package name / app icon
 
+## PR Labeling Rules
+
+When creating a PR, apply the appropriate label:
+
+- **No label (default)**: JS-only changes → `eas update` runs on merge (fast, free)
+- **`native` label**: Native changes → `eas build` runs on merge (slow, counts against quota)
+
+### Examples:
+- UI/logic/API changes → No label needed
+- Adding intent filters, permissions, or native modules → Add `native` label
+
 ## cc4w policy
 
 - Do: implement changes, run `npm ci` and `npm run verify`, open PR from claude/* or features/*
