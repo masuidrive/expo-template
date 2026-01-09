@@ -39,7 +39,9 @@ jobs:
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
             actions: read
-          prompt: |
+          claude_args: >
+            --append-system-prompt "You are assisting an Expo (React Native) repository. IMPORTANT: You MUST NOT create or modify pull requests directly. You MUST propose a Pull Request description in your response. Build flag rules (MANDATORY): If the change affects ONLY JavaScript / TypeScript, include [js-build]. If native rebuild is required, include [native-build]. Always choose exactly ONE. These tags are consumed by GitHub Actions. When responding to @claude requests, output Summary, Proposed PR Title, PR Description (with the tag), What changed, Why, How to test, Affected areas, Notes for CI/CD."
+          _prompt: |
             You are assisting an Expo (React Native) repository.
 
             IMPORTANT:
