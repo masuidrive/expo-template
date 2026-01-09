@@ -141,9 +141,10 @@ jobs:
       - run: npm ci
 
       - name: EAS Update (JS bundle to dev channel)
-        run: npx eas-cli@latest update --branch dev --message "Deployed from main after PR #${{ github.event.pull_request.number }}" --non-interactive
+        run: npx eas-cli@latest update --branch dev --message "${MESSAGE}" --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          MESSAGE: "Deployed from main after PR #${{ github.event.pull_request.number }}"
 ```
 
 ### 4-3) main へ merge + `native` ラベル付きなら Android build（重い）
