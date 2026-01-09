@@ -10,7 +10,7 @@ jobs:
     # Run only if PR was merged AND doesn't have 'native' label
     if: |
       github.event.pull_request.merged == true &&
-      !contains(github.event.pull_request.labels.*.name, 'native')
+  contains(github.event.pull_request.body, '[js-build]')
     runs-on: ubuntu-latest
     defaults:
       run:
