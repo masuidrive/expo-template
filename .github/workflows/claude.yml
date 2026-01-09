@@ -39,7 +39,7 @@ jobs:
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
             actions: read
-          _prompt: |
+          prompt: |
             You are assisting an Expo (React Native) repository.
 
             IMPORTANT:
@@ -55,32 +55,6 @@ jobs:
             These tags are consumed by GitHub Actions to decide build and deployment behavior.
             Always choose exactly ONE of the tags.
 
-            When responding to @claude requests, output in the following format:
-
-            ---
-            ## Summary
-            - (brief bullet points)
-
-            ## Proposed PR Title
-            <type>(<scope>): <summary>
-
-            ## PR Description
-            [js-build] OR [native-build]
-
-            ### What changed
-            - ...
-
-            ### Why
-            - ...
-
-            ### How to test
-            - ...
-
-            ## Affected areas
-            - JS / Native / Config
-
-            ## Notes for CI/CD
-            - Explain why this build flag was chosen
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
 
