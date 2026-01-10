@@ -169,9 +169,52 @@ eas update --branch dev --message "hello v1"
 eas build -p android --profile dev
 ```
 
+**初回実行時の注意**:
+* 「Generate a new Android Keystore?」と聞かれたら **Yes** を選択
+* Keystore は EAS が自動生成・管理する
+
 * ビルドは **Expo のクラウド**
 * Free tier は queue 待ちあり（数分〜）
 * 完了後、**APK の URL と QR コード** が出る
+
+### Claude Code などの非対話環境での実行
+
+EAS CLI はインタラクティブな入力（Keystore 生成の確認など）を要求するため、`--non-interactive` フラグでは初回ビルドが失敗する。
+
+**解決方法**: `expect` スクリプトを使用してプロンプトに自動応答する。
+
+以下の内容で `eas-build-auto.exp` を作成：
+
+```bash
+#!/usr/bin/expect -f
+
+# Auto-answer EAS build Keystore generation prompt
+set timeout -1
+
+cd APPNAME
+
+spawn npx eas build -p android --profile dev
+
+expect {
+    "Generate a new Android Keystore?" {
+        send "y\r"
+        exp_continue
+    }
+    eof
+}
+
+catch wait result
+exit [lindex $result 3]
+```
+
+実行：
+
+```bash
+chmod +x eas-build-auto.exp
+expect eas-build-auto.exp
+```
+
+この方法で、非対話環境でも Keystore 生成プロンプトを自動的に処理してビルドを完了できる。
 
 ---
 

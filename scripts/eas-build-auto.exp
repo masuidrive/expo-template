@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+# Auto-answer EAS build Keystore generation prompt
+# Usage: expect scripts/eas-build-auto.exp
+
+set timeout -1
+
+cd hello-world
+
+spawn npx eas build -p android --profile dev
+
+expect {
+    "Generate a new Android Keystore?" {
+        send "y\r"
+        exp_continue
+    }
+    eof
+}
+
+catch wait result
+exit [lindex $result 3]
