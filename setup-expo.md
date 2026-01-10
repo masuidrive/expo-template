@@ -29,7 +29,146 @@ EAS Update  → JS bundle（UI/ロジック）
 
 ---
 
-## 0. アプリ識別子を決める
+## 0. Claude Code で実行する際の確認（最初に必ず確認）
+
+この手順を Claude Code で実行する際は、**最初に必ず** `AskUserQuestion` ツールでユーザーに以下を確認すること：
+
+### 確認内容
+
+```typescript
+AskUserQuestion({
+  questions: [
+    {
+      question: "Android/iOS のネイティブビルド（Dev Client）を今すぐ作成しますか？",
+      header: "ビルド方式",
+      multiSelect: false,
+      options: [
+        {
+          label: "はい、ネイティブビルドを作成する",
+          description: "EAS Build で Android APK（または iOS IPA）をビルドします。初回は5〜10分程度かかります。ビルド後は JS のみで OTA 更新可能になります。"
+        },
+        {
+          label: "いいえ、Expo Go で試したい",
+          description: "ローカルの Metro bundler を使って Expo Go アプリで動作確認します。ビルド不要ですが、EAS Update は使えません。"
+        },
+        {
+          label: "詳しく説明してほしい",
+          description: "Dev Client と Expo Go の違い、それぞれのメリット・デメリットを詳しく説明します。"
+        }
+      ]
+    }
+  ]
+})
+```
+
+### 選択肢による処理の分岐
+
+#### 1. 「はい、ネイティブビルドを作成する」を選択した場合
+
+→ **この手順書の全ステップを実行**
+- セクション 1〜9 まで実行し、EAS Build でネイティブアプリをビルドする
+- 初回は Android Keystore の生成確認があるため、`expect` スクリプトを使用する（セクション 9 参照）
+- ビルド完了後、APK/IPA のダウンロード URL と QR コードが提供される
+
+#### 2. 「いいえ、Expo Go で試したい」を選択した場合
+
+→ **セクション 2〜4 のみ実行し、その後 Expo Go での起動方法を案内**
+
+実行する手順：
+1. セクション 2: プロジェクト作成
+2. セクション 7: Hello World を書く（App.tsx の編集）
+3. 以下のコマンドでローカル開発サーバーを起動：
+
+```bash
+npx expo start
+```
+
+4. ユーザーに以下を案内：
+   - iOS: App Store から「Expo Go」アプリをインストール → QR コードをスキャン
+   - Android: Google Play から「Expo Go」アプリをインストール → QR コードをスキャン
+   - Metro bundler にローカル接続して動作確認
+
+**注意事項をユーザーに伝える：**
+- ✅ すぐに動作確認できる（ビルド不要）
+- ✅ コード変更時に Hot Reload が効く
+- ❌ EAS Update による OTA 配布はできない
+- ❌ カスタムネイティブモジュールは追加できない
+- ❌ ローカルネットワーク接続が必要
+
+**以降のセクション（5〜9）は実行しない。**
+
+#### 3. 「詳しく説明してほしい」を選択した場合
+
+→ **以下の説明をユーザーに提示してから、再度確認する**
+
+```
+## Dev Client と Expo Go の違い
+
+### Dev Client（このドキュメントの方式）
+
+**何ができる？**
+- 最初に1回だけネイティブアプリをビルド（Android APK または iOS IPA）
+- 以降は JS/UI の変更を EAS Update で OTA 配布（再ビルド不要）
+- カスタムネイティブモジュールの追加が可能
+- Expo Go では使えないネイティブ機能（特定の権限、Intent など）が使える
+
+**メリット：**
+- ✅ 本番に近い環境で開発できる
+- ✅ EAS Update で JS を素早く配布（Web のデプロイに近い体験）
+- ✅ ネイティブ機能を自由に追加可能
+- ✅ インターネット経由で配布可能（QR コード、URL）
+
+**デメリット：**
+- ⏱ 初回ビルドに5〜10分かかる（EAS クラウドでビルド）
+- ⏱ ネイティブ変更時は再ビルドが必要
+- 💰 EAS の無料プランには月間ビルド回数制限あり
+
+**どんな人向け？**
+- 実機で本番に近い環境をテストしたい
+- EAS Update で継続的に配布したい
+- ローカルサーバーが立てられない環境（VM、Claude Code for Web など）
+- カスタムネイティブモジュールを使いたい
+
+---
+
+### Expo Go（標準的な開発方式）
+
+**何ができる？**
+- Expo が提供する標準ランタイムアプリ（App Store/Google Play からインストール）
+- ローカルの Metro bundler に接続して開発
+- Expo に含まれる標準ネイティブモジュールのみ使用可能
+
+**メリット：**
+- ✅ ビルド不要、すぐに始められる
+- ✅ Hot Reload で即座に変更が反映
+- ✅ EAS Build の制限を気にしなくていい
+
+**デメリット：**
+- ❌ EAS Update による OTA 配布ができない
+- ❌ カスタムネイティブモジュールが追加できない
+- ❌ ローカルネットワーク接続が必要（LAN/USB）
+- ❌ Expo Go に含まれる機能のみに制限される
+
+**どんな人向け？**
+- まずは Expo を試してみたい
+- ローカルで素早くプロトタイプを作りたい
+- 標準的な React Native 機能だけで十分
+- ローカル環境で開発サーバーが立てられる
+
+---
+
+**推奨：**
+- **初めて試す場合**: Expo Go でまず動作確認
+- **本格的な開発**: Dev Client + EAS Update
+
+どちらの方式で進めますか？
+```
+
+説明後、再度最初の質問（選択肢 1, 2 のみ）を表示する。
+
+---
+
+## 0-A. アプリ識別子を決める
 
 まず、アプリのディレクトリ名を決める。これがプロジェクト名になる。
 
@@ -181,40 +320,21 @@ eas build -p android --profile dev
 
 EAS CLI はインタラクティブな入力（Keystore 生成の確認など）を要求するため、`--non-interactive` フラグでは初回ビルドが失敗する。
 
-**解決方法**: `expect` スクリプトを使用してプロンプトに自動応答する。
+**解決方法**: 疑似端末（PTY）を使ってプロンプトに自動応答するツールを使用する。
 
-以下の内容で `eas-build-auto.exp` を作成：
+#### クロスプラットフォーム対応（推奨）
 
-```bash
-#!/usr/bin/expect -f
-
-# Auto-answer EAS build Keystore generation prompt
-set timeout -1
-
-cd APPNAME
-
-spawn npx eas build -p android --profile dev
-
-expect {
-    "Generate a new Android Keystore?" {
-        send "y\r"
-        exp_continue
-    }
-    eof
-}
-
-catch wait result
-exit [lindex $result 3]
-```
-
-実行：
+Node.js の `node-pty` パッケージを使うことで、Windows、macOS、Linux で動作する自動化スクリプトを作成できる。
 
 ```bash
-chmod +x eas-build-auto.exp
-expect eas-build-auto.exp
+npm install node-pty
 ```
 
-この方法で、非対話環境でも Keystore 生成プロンプトを自動的に処理してビルドを完了できる。
+このパッケージを使って、EAS CLI のプロンプト（"Generate a new Android Keystore?" など）を検知して自動的に "y" を送信するスクリプトを作成すれば、非対話環境でもビルドが実行できる。
+
+#### Unix/Linux/macOS のみ
+
+`expect` コマンド（標準でインストール済み）を使う方法もある。ただし Windows では動作しない。
 
 ---
 
