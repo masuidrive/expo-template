@@ -1,16 +1,12 @@
 {
-  "name": "hello-update",
-  "version": "10",
+  "name": "hello-world",
+  "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web",
-    "typecheck": "tsc --noEmit",
-    "lint": "echo 'Lint: No linter configured yet'",
-    "test": "echo 'Test: No tests configured yet'",
-    "verify": "npm run typecheck && npm run lint && npm run test"
+    "web": "expo start --web"
   },
   "dependencies": {
     "expo": "~54.0.31",

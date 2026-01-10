@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "hello-update",
-    "slug": "hello-update",
-    "version": "10",
+    "name": "hello-world",
+    "slug": "hello-world",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -22,14 +22,14 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.masuidrive.helloupdate"
+      "package": "com.masuidrive.helloworld"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "b62fa87c-79c4-4c00-be3e-6a3bc0f8c216"
+        "projectId": "0adab194-b0d2-4e46-aeed-d9b585aec6fa"
       }
     },
     "owner": "masuidrive",
@@ -37,7 +37,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/b62fa87c-79c4-4c00-be3e-6a3bc0f8c216"
+      "url": "https://u.expo.dev/0adab194-b0d2-4e46-aeed-d9b585aec6fa"
     }
   }
 }

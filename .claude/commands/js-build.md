@@ -2,8 +2,10 @@
 
 Run EAS Update to deploy JavaScript/UI changes without native rebuild.
 
+**Note**: Execute `npx` commands from the project root directory (where .git exists).
+
 ```bash
-cd hello-update
+cd hello-world
 npx eas update --branch dev --message "JS update from Claude Code" --non-interactive
 ```
 

@@ -2,8 +2,10 @@
 
 Run EAS Build to create a new native APK with updated native code.
 
+**Note**: Execute `npx` commands from the project root directory (where .git exists).
+
 ```bash
-cd hello-update
+cd hello-world
 npx eas build -p android --profile dev --non-interactive
 ```
 
