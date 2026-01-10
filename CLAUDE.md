@@ -9,27 +9,6 @@ This is an Expo project using Dev Client + EAS Update for OTA (over-the-air) JS 
 - **Dev Client**: Native app built once, acts as the runtime environment
 - **EAS Update**: JS bundle distributed via CDN, no rebuild needed for UI/logic changes
 
-## Common Commands
-
-```bash
-# Create project (if starting fresh)
-npx create-expo-app hello-update
-cd hello-update
-
-# Install Dev Client
-npx expo install expo-dev-client
-
-# Initialize EAS
-npx expo prebuild
-npx eas init
-
-# Build Dev Client APK (one-time)
-npx eas build -p android --profile dev
-
-# Deploy JS updates (no rebuild needed)
-npx eas update --branch dev --message "description"
-```
-
 ## What Can Be Updated via EAS Update (no rebuild)
 
 - UI components and screens
@@ -44,19 +23,11 @@ npx eas update --branch dev --message "description"
 - Native modules
 - Package name / app icon
 
-## PR Labeling Rules
+## Pull Request Rules
 
-When creating a PR, apply the appropriate label:
+When creating pull requests, add the appropriate build tag to the PR title or commit message:
 
-- **No label (default)**: JS-only changes → `eas update` runs on merge (fast, free)
-- **`native` label**: Native changes → `eas build` runs on merge (slow, counts against quota)
+- **[js-build]**: For JS-only changes (UI, logic, components) that can be deployed via EAS Update
+- **[native-build]**: For changes that require native rebuild (permissions, native modules, deep links, etc.)
 
-### Examples:
-- UI/logic/API changes → No label needed
-- Adding intent filters, permissions, or native modules → Add `native` label
-
-## cc4w policy
-
-- Do: implement changes, run `npm ci` and `npm run verify`, open PR from claude/* or features/*
-- Don't: run `eas build`, `eas update`, or `expo start`
-- Don't: store secrets
+This helps identify which type of deployment is needed for each change.
