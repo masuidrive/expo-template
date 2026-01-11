@@ -19,7 +19,7 @@ Expo を使って iOS/Android アプリの開発環境を構築する手順で�
 **デメリット**:
 - Expo が提供する標準 API のみ使用可能
 - カスタムネイティブモジュールは使用不可
-- EAS Update との組み合わせには制限あり（runtimeVersion 非対応）
+- EAS Update は Extensions タブから手動で選択する必要がある（自動配信は Dev Client が必要）
 
 **こんな場合に最適**:
 - React Native や Expo を学習中
@@ -162,12 +162,22 @@ QR コードが表示されます。
 
 ### A-6. 以降の開発フロー
 
+#### ローカル開発（開発サーバー使用）
+
 1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
 2. 保存すると自動的にリロードされる
 
+#### EAS Update による配信
+
+Expo Go でも `/ota` コマンドで EAS Update を使った配信が可能です：
+
+1. `App.tsx` を編集
+2. Claude Code で `/ota` を実行
+3. Expo Go アプリの **Extensions タブ** → **Login** → 公開済み Update を選択して **Open**
+
 **制限事項**:
-- カスタムネイティブモジュールは使用不可
-- EAS Update による OTA 配信は利用不可（runtimeVersion 非対応）
+- カスタムネイティブモジュールは使用不可（Expo が提供する標準 API のみ）
+- `runtimeVersion` はなく SDK バージョンで互換性を管理
 
 ---
 
