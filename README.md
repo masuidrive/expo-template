@@ -16,27 +16,7 @@ Expo Dev Client + EAS Update のデモプロジェクト。Claude Code のカス
 
 ## カスタムスキル
 
-このプロジェクトでは、Claude Code 用のカスタムスキルを提供しています。
-
-### `/setup-expo-project`
-
-**目的**: Expo プロジェクトの初期セットアップを自動化
-
-**実行内容**:
-- プロジェクト名の確認
-- Expo プロジェクトの作成
-- expo-dev-client と expo-updates のインストール
-- expo prebuild と eas init の実行
-- eas.json の自動生成（dev プロファイル）
-- Hello World App.tsx の作成
-
-**実行場所**: プロジェクトルート（APPNAMEの親ディレクトリ）
-
-**前提条件**:
-```bash
-npm install -g eas-cli
-eas login
-```
+このプロジェクトでは、開発中に繰り返し使用するスキルを提供しています。
 
 ### `/ota`
 
@@ -78,14 +58,15 @@ eas login
 
 ### 新規プロジェクトの作成
 
-```bash
-# 前提条件（1回のみ）
-npm install -g eas-cli
-eas login
+詳細は [setup-expo.md](./setup-expo.md) を参照してください。
 
-# Claude Code で実行
-/setup-expo-project
-```
+概要：
+1. 前提条件（eas-cli インストール、ログイン）
+2. プロジェクト作成（`npx create-expo-app`）
+3. 依存関係インストール（expo-dev-client、expo-updates）
+4. EAS 初期化（`expo prebuild`、`eas init`）
+5. eas.json 作成
+6. App.tsx 編集
 
 ### 初回デプロイ
 
@@ -125,7 +106,6 @@ PR の説明またはコミットメッセージに、以下のタグを含め�
 
 カスタムスキルの実装は以下にあります：
 
-- `.claude/skills/setup-expo-project/SKILL.md`
 - `.claude/skills/ota/SKILL.md`
 - `.claude/skills/dist-dev-client/SKILL.md`
 
