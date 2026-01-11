@@ -18,6 +18,21 @@ Expo Dev Client + EAS Update のデモプロジェクト。Claude Code のカス
 
 このプロジェクトでは、開発中に繰り返し使用するスキルを提供しています。
 
+### `/dev-server`
+
+**目的**: Expo 開発サーバーの起動・停止
+
+**使用方法**:
+- 起動: `/dev-server` または `/dev-server start`
+- 停止: `/dev-server stop` または「dev-serverを止めて」
+
+**実行場所**: アプリルート（APPNAMEディレクトリ、.gitルートではない）
+
+**特徴**:
+- バックグラウンドで実行
+- QR コードで Expo Go アプリから接続
+- 簡単に停止可能
+
 ### `/ota`
 
 **目的**: JavaScript/UI の変更を EAS Update で OTA 配信
@@ -106,6 +121,7 @@ PR の説明またはコミットメッセージに、以下のタグを含め�
 
 カスタムスキルの実装は以下にあります：
 
+- `.claude/skills/dev-server/SKILL.md`
 - `.claude/skills/ota/SKILL.md`
 - `.claude/skills/dist-dev-client/SKILL.md`
 
