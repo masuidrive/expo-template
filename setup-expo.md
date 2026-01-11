@@ -219,88 +219,55 @@ AskUserQuestion({
 
 ### Expo Go 選択時の詳細手順
 
-「Expo Go（標準APIのみ）」を選択した場合の実行手順：
+「Expo Go（標準APIのみ）」を選択した場合：
 
-**1. eas-cli のインストール**
-```bash
-npm install -g eas-cli
-```
+**1. 基本セットアップ（セクション 1〜2）**
+- eas-cli のインストール
+- Expo アカウントでログイン
+- プロジェクト作成
 
-**2. Expo アカウントでログイン**
+**2. expo-updates をインストール**
 ```bash
-eas login
-```
-
-**3. プロジェクト作成**
-```bash
-npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
-```
-
-**4. expo-updates をインストール**
-```bash
 npx expo install expo-updates
 ```
 
-**5. EAS プロジェクトを初期化**
+**3. EAS プロジェクトを初期化**
 ```bash
 eas init --non-interactive --force
 ```
 
-**6. App.tsx を Hello World に編集**
-```typescript
-import { Text, View } from 'react-native';
+**4. App.tsx を編集**
 
-export default function App() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Hello World v1</Text>
-    </View>
-  );
-}
-```
+Hello World アプリを作成します。
 
-**7. EAS Update で配信**
-```bash
-eas update --branch production --message "Initial release"
-```
+**5. 配信は `/ota` スキルを使用**
 
-初回実行時、`updates.url` と `runtimeVersion` が自動設定されます。
+Claude Code で **`/ota`** を実行すると、自動的に：
+- EAS Update で配信
+- 初回実行時、`updates.url` と `runtimeVersion` が自動設定される
+- QR コードまたは URL が提供される
 
-**8. Expo Go でアクセス**
+**6. Expo Go でアクセス**
 
-配信完了後、以下の方法でアクセス：
-- EAS Dashboard の Update ページで QR コードをスキャン
-- または Expo Go アプリで Project URL を入力
-
-ユーザーに以下を案内：
-- iOS: App Store から「Expo Go」アプリをインストール → QR コードをスキャン
-- Android: Google Play から「Expo Go」アプリをインストール → QR コードをスキャン
+配信完了後：
+- iOS: App Store から「Expo Go」をインストール → QR コードをスキャン
+- Android: Google Play から「Expo Go」をインストール → QR コードをスキャン
 - **ローカルサーバー不要**でインターネット経由でアクセス可能
 
-**（オプション）ローカル開発する場合：**
+**（オプション）ローカル開発：**
 ```bash
 npx expo start
 ```
 QR コードをスキャンしてローカル Metro bundler に接続。Hot Reload が使える。
 
-**注意事項をユーザーに伝える：**
-- ✅ ビルド不要で EAS Update により OTA 配信
-- ✅ ローカルサーバーが立てられない環境でも使える
-- ✅ iOS でも Apple 開発者アカウント不要
-- ✅ インターネット経由で配布可能（QR コード、URL）
+**以降の更新：**
+App.tsx を編集後、Claude Code で **`/ota`** を実行するだけ。
+
+**制限事項：**
 - ⚠️ EAS Update の一部機能が使えない（runtimeVersion など）
-- ❌ 標準 API のみ（一部の API に制限）
-- ❌ カスタムネイティブモジュールは追加できない
+- ❌ 標準 API のみ（カスタムネイティブモジュール不可）
 - ❌ ホーム画面に追加できない（Expo Go 経由でしか起動できない）
-
-**以降の JS 更新：**
-App.tsx を編集後、以下のコマンドで配信：
-```bash
-eas update --branch production --message "変更内容"
-```
-
-Expo Go アプリを再起動すると、新しい Update が自動的にダウンロードされます。
 
 **以降のセクション（3〜9）は実行しない（Dev Client 用の手順）。**
 
@@ -436,143 +403,51 @@ export default function App() {
 
 **ビルドの前に** Update を配布しておく。
 
+### Claude Code で配布する場合（推奨）
+
+Claude Code で **`/ota`** を実行するだけです。
+
+初回実行時に `updates.url` と `runtimeVersion` が自動設定されます。
+
+### 手動で配布する場合
+
 ```bash
+cd APPNAME
 eas update --branch dev --message "hello v1"
 ```
 
-初回実行時に `updates.url` と `runtimeVersion` が自動設定される。
-
 ---
 
-## 9. Dev Client のビルド自動化（Keystore 対応）
+## 9. Dev Client のビルド
+
+### Claude Code でビルドする場合（推奨）
+
+Claude Code で **`/dist-dev-client`** を実行するだけです。
+
+スキルが自動的に：
+1. 現在のプラットフォームを検出（macOS/Windows/Linux）
+2. Android Keystore 生成プロンプトに自動応答
+3. EAS Build を実行
+4. 一時スクリプトを自動削除
+
+**初回実行時の注意**:
+- Android Keystore の生成確認が表示されますが、自動的に "yes" で応答されます
+- Keystore は EAS が自動生成・管理します
+
+### 手動でビルドする場合
 
 ```bash
+cd APPNAME
 eas build -p android --profile dev
 ```
 
-**初回実行時の注意**:
-* 「Generate a new Android Keystore?」と聞かれたら **Yes** を選択
-* Keystore は EAS が自動生成・管理する
+「Generate a new Android Keystore?」と聞かれたら **Yes** を選択してください。
 
-* ビルドは **Expo のクラウド**
+### ビルド完了後
+
+* ビルドは **Expo のクラウド**で実行
 * Free tier は queue 待ちあり（数分〜）
-* 完了後、**APK の URL と QR コード** が出る
-
-### 環境別の推奨方法
-
-EAS Build の初回実行時、Android Keystore の生成確認が表示されます。Claude Code は環境に応じて自動的に処理します。
-
-#### macOS: expect スクリプト
-
-expect コマンドを使用して自動化します：
-
-```bash
-#!/usr/bin/expect -f
-set timeout -1
-spawn npx eas build -p android --profile dev
-expect {
-    "Generate a new Android Keystore?" {
-        send "y\r"
-        exp_continue
-    }
-    eof
-}
-wait
-```
-
-**推奨される使用方法（一時ファイルを自動削除）**:
-```bash
-# 一時スクリプトを生成して実行
-SCRIPT_NAME="eas-build-auto-$$.exp"
-cat > "$SCRIPT_NAME" << 'EOF'
-#!/usr/bin/expect -f
-set timeout -1
-spawn npx eas build -p android --profile dev
-expect {
-    "Generate a new Android Keystore?" {
-        send "y\r"
-        exp_continue
-    }
-    eof
-}
-wait
-EOF
-
-chmod +x "$SCRIPT_NAME"
-"./$SCRIPT_NAME"
-EXIT_CODE=$?
-
-# 終了後に一時ファイルを削除
-rm -f "$SCRIPT_NAME"
-
-exit $EXIT_CODE
-```
-
-#### Windows/Linux: Node.js + node-pty
-
-node-pty ライブラリを使用して自動化します：
-
-```bash
-npm install node-pty
-```
-
-```javascript
-const pty = require('node-pty');
-const os = require('os');
-const fs = require('fs');
-
-const scriptPath = __filename; // 自身のパス
-
-const shell = os.platform() === 'win32' ? 'cmd.exe' : 'bash';
-const ptyProcess = pty.spawn('npx', ['eas', 'build', '-p', 'android', '--profile', 'dev'], {
-  name: 'xterm-color',
-  cwd: process.cwd(),
-  env: process.env
-});
-
-ptyProcess.on('data', (data) => {
-  process.stdout.write(data);
-  if (data.includes('Generate a new Android Keystore?')) {
-    ptyProcess.write('y\r');
-  }
-});
-
-ptyProcess.on('exit', (code) => {
-  // 終了時に一時ファイルを削除
-  try {
-    fs.unlinkSync(scriptPath);
-  } catch (err) {
-    // 削除失敗は無視
-  }
-  process.exit(code);
-});
-
-// プロセス終了時のクリーンアップ
-process.on('SIGINT', () => {
-  try {
-    fs.unlinkSync(scriptPath);
-  } catch (err) {
-    // 削除失敗は無視
-  }
-  process.exit(130);
-});
-```
-
-**使用方法**:
-1. 一時ファイル名を生成（例: `eas-build-auto-${Date.now()}.js`）
-2. 上記内容を一時ファイルとして保存
-3. 実行: `node <一時ファイル名>`
-4. スクリプトが終了時に自動的に自身を削除
-
-### Claude Code での実行
-
-`/dist-dev-client` コマンドを実行すると、Claude Code が自動的に：
-1. 現在のプラットフォームを検出
-2. 適切な自動化スクリプトを一時ファイルとして生成
-3. EAS Build を実行し、Keystore 確認に自動応答
-4. **実行終了後、一時ファイルを自動削除**
-
-**重要**: 実装の詳細は実行時に Claude Code が環境に応じて決定します。一時スクリプトは必ず削除されます。
+* 完了後、**APK の URL と QR コード** が表示される
 
 ---
 
@@ -628,9 +503,14 @@ Dev Client は**開発用**なので、複数の Update を切り替えてテス
 <Text>Hello World v2</Text>
 ```
 
-更新を配布：
+### Claude Code で更新する場合（推奨）
+
+Claude Code で **`/ota`** を実行するだけです。
+
+### 手動で更新する場合
 
 ```bash
+cd APPNAME
 eas update --branch dev --message "hello v2"
 ```
 
@@ -730,9 +610,31 @@ EAS の Free プランには Build 回数や Update の MAU（月間アクティ
 
 ## コマンドまとめ
 
+### Claude Code を使用する場合（推奨）
+
 ```bash
 # 初期セットアップ
 npm install -g eas-cli
+eas login
+npx create-expo-app@latest APPNAME --template blank-typescript
+cd APPNAME
+npx expo install expo-dev-client expo-updates
+npx expo prebuild --platform android
+eas init --non-interactive --force
+
+# eas.json を作成（channel: "dev" を忘れずに）
+
+# 初回 Update - Claude Code で `/ota` を実行
+# ビルド - Claude Code で `/dist-dev-client` を実行
+# 以降の更新 - Claude Code で `/ota` を実行
+```
+
+### 手動実行する場合
+
+```bash
+# 初期セットアップ
+npm install -g eas-cli
+eas login
 npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 npx expo install expo-dev-client expo-updates
