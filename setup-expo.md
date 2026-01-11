@@ -89,7 +89,19 @@ eas login
 
 詳細は上記「開発方式の選択」セクションを参照してください。
 
-### 3. ターゲットプラットフォーム（Dev Client の場合のみ）
+### 3. 開発パターン（Expo Go の場合のみ）
+
+Expo Go でどの開発パターンを使いますか？ **AskUserQuestion を使って聞く**。
+
+**選択肢**:
+- **OTA 配信パターン**: EAS Update で配信（Sandbox 環境推奨）
+- **開発サーバーパターン**: ローカルサーバーで開発（ローカル環境推奨）
+
+**重要**:
+- Claude Code on the Web や Sandbox 環境では、開発サーバーを連続的に起動できないため、**OTA 配信パターン** を選択してください
+- ローカルマシンで Claude Code を実行している場合は、どちらでも選択可能です
+
+### 4. ターゲットプラットフォーム（Dev Client の場合のみ）
 
 どのプラットフォーム向けにビルドしますか？ **AskUserQuestion を使って聞く**。
 
@@ -137,47 +149,137 @@ export default function App() {
 }
 ```
 
-### A-3. 開発サーバーを起動
+### A-3. 開発方式の選択
+
+Expo Go では2つの開発方式があります。**AskUserQuestion を使って聞く**。
+
+#### 選択肢
+
+**A. OTA 配信パターン（推奨：Sandbox 環境）**
+- EAS Update で JS バンドルを配信
+- 開発サーバーを常時起動する必要がない
+- Claude Code on the Web などの Sandbox 環境に最適
+
+**B. 開発サーバーパターン（推奨：ローカル環境）**
+- ローカルで開発サーバーを起動
+- コード変更が即座に反映（Hot Reload）
+- ローカルマシンで Claude Code を実行している場合に最適
+
+#### 重要：Sandbox 環境について
+
+**Claude Code on the Web や Sandbox 環境では、開発サーバーを連続的に起動しておくことができません**。そのため、これらの環境では **OTA 配信パターン** を使用してください。
+
+---
+
+### A-4. パターン A：OTA 配信で開発
+
+#### A-4-1. EAS 初期化
+
+初回のみ、EAS プロジェクトを初期化します：
 
 ```bash
-npx expo start
+eas init --non-interactive --force
 ```
 
-QR コードが表示されます。
+これにより、`app.json` に EAS projectId が追加されます。
 
-### A-4. Expo Go アプリをインストール（ユーザー操作）
+#### A-4-2. 初回 Update を配信
+
+**Claude Code で `/ota` を実行**します。
+
+これにより：
+- `eas update --branch dev` が実行される
+- 初回実行時、`updates.url` と `runtimeVersion` が `app.json` に自動設定される
+- JS バンドルが EAS の CDN にアップロードされる
+
+#### A-4-3. Expo Go でアプリを確認
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
-1. **Android**: Google Play から「Expo Go」をインストール
-2. **iOS**: App Store から「Expo Go」をインストール
+1. **Expo Go アプリをインストール**
+   - **Android**: Google Play から「Expo Go」をインストール
+   - **iOS**: App Store から「Expo Go」をインストール
 
-### A-5. アプリを起動（ユーザー操作）
+2. **Expo Go アプリを起動**
 
-**開発者に以下の手順を説明して実行してもらってください**：
+3. **Update をロード**
+   - 下部の **「Extensions」** タブをタップ
+   - **「Login」** をタップして Expo アカウントにログイン
+   - ログイン後、**EAS Update セクション**に公開済みの Update が表示される
+   - 表示された Update の **「Open」** をタップ
+   - 「Hello World v1」が表示される
 
-1. Expo Go アプリを起動
-2. ターミナルに表示された QR コードをスキャン（Android: アプリ内、iOS: カメラアプリ）
-3. アプリが起動して「Hello World v1」が表示される
+#### A-4-4. Update の URL
 
-### A-6. 以降の開発フロー
+EAS Update の URL は以下の形式です：
 
-#### ローカル開発（開発サーバー使用）
+```
+https://u.expo.dev/[project-id]?channel-name=dev&runtime-version=[runtime-version]
+```
+
+この URL は `eas update` コマンドの出力に表示されます。
+
+#### A-4-5. 以降の開発フロー
 
 1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
-2. 保存すると自動的にリロードされる
-
-#### EAS Update による配信
-
-Expo Go でも `/ota` コマンドで EAS Update を使った配信が可能です：
-
-1. `App.tsx` を編集
-2. Claude Code で `/ota` を実行
-3. Expo Go アプリの **Extensions タブ** → **Login** → 公開済み Update を選択して **Open**
+2. **Claude Code で `/ota` を実行**
+3. Expo Go アプリで **Extensions タブ** から最新の Update を選択して **Open**
 
 **制限事項**:
 - カスタムネイティブモジュールは使用不可（Expo が提供する標準 API のみ）
-- `runtimeVersion` はなく SDK バージョンで互換性を管理
+- Extensions タブから手動で Update を選択する必要がある
+
+---
+
+### A-5. パターン B：開発サーバーで開発
+
+#### A-5-1. 開発サーバーを起動
+
+**Claude Code で `/dev-server` を実行**します。
+
+これにより：
+- `npx expo start` がバックグラウンドで実行される
+- QR コードとアクセス用 URL が生成される
+
+#### A-5-2. Expo Go でアプリを確認
+
+**開発者に以下の手順を説明して実行してもらってください**：
+
+1. **Expo Go アプリをインストール**
+   - **Android**: Google Play から「Expo Go」をインストール
+   - **iOS**: App Store から「Expo Go」をインストール
+
+2. **Expo Go アプリを起動**
+
+3. **QR コードをスキャン**
+   - ターミナルに表示された QR コードをスキャン
+   - **Android**: Expo Go アプリ内のスキャナーを使用
+   - **iOS**: カメラアプリで QR コードをスキャン
+   - アプリが起動して「Hello World v1」が表示される
+
+#### A-5-3. 開発サーバーの URL
+
+開発サーバーは以下の URL でアクセスできます：
+
+```
+exp://[YOUR-IP]:8081
+```
+
+例: `exp://192.168.1.100:8081`
+
+この URL は `npx expo start` の出力に表示されます。
+
+#### A-5-4. 以降の開発フロー
+
+1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
+2. 保存すると Expo Go アプリに自動的にリロードされる
+
+**開発サーバーを停止する場合**:
+- **Claude Code で `/dev-server stop` を実行**
+
+**制限事項**:
+- カスタムネイティブモジュールは使用不可（Expo が提供する標準 API のみ）
+- 開発サーバーを常時起動しておく必要がある
 
 ---
 
@@ -441,16 +543,47 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ### A. Expo Go の場合
 
+#### パターン A：OTA 配信（Sandbox 環境推奨）
+
 ```bash
 # 初回セットアップ
 npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 # App.tsx を編集
-npx expo start
+eas init --non-interactive --force
+
+# Claude Code で実行
+/ota  # Update を配信
+
+# Expo Go アプリで確認
+# - Extensions タブ → Login → Update を選択 → Open
+
+# 開発フロー
+# - コードを編集
+# - Claude Code で /ota を実行
+# - Expo Go で Extensions タブから Update を選択
+```
+
+#### パターン B：開発サーバー（ローカル環境推奨）
+
+```bash
+# 初回セットアップ
+npx create-expo-app@latest APPNAME --template blank-typescript
+cd APPNAME
+# App.tsx を編集
+
+# Claude Code で実行
+/dev-server  # 開発サーバーを起動
+
+# Expo Go アプリで確認
+# - QR コードをスキャン
 
 # 開発フロー
 # - コードを編集
 # - 自動的にリロード
+
+# サーバー停止
+# - Claude Code で /dev-server stop を実行
 ```
 
 ### B. Dev Client の場合
