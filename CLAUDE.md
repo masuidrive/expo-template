@@ -25,31 +25,9 @@ This is an Expo project using Dev Client + EAS Update for OTA (over-the-air) JS 
 
 ## Custom Skills
 
-This project provides the following custom skills for Claude Code:
+This project has custom skills for common Expo workflows. Skills are automatically discovered from `.claude/skills/`.
 
-- **`/setup-expo-project`**: Complete Expo project setup (sections 1-7)
-  - Creates new Expo project with Dev Client + EAS Update
-  - Installs dependencies (expo-dev-client, expo-updates)
-  - Configures EAS (prebuild, init, eas.json)
-  - Creates Hello World App.tsx
-  - Execute from project root (parent of APPNAME)
-  - Skill location: `.claude/skills/setup-expo-project/SKILL.md`
-
-- **`/ota`**: Deploy JS-only changes via EAS Update (Over-The-Air)
-  - For UI, business logic, styling changes
-  - No native rebuild required
-  - Fast and free
-  - Execute from app root directory (APPNAME, not .git root)
-  - Skill location: `.claude/skills/ota/SKILL.md`
-
-- **`/dist-dev-client`**: Build Dev Client APK/IPA
-  - Automatically handles Keystore generation prompts
-  - Environment-specific implementation:
-    - macOS: expect script
-    - Windows/Linux: Node.js + node-pty
-  - Required for native code changes
-  - Execute from app root directory (APPNAME, not .git root)
-  - Skill location: `.claude/skills/dist-dev-client/SKILL.md`
+For usage documentation, see [README.md](./README.md).
 
 ## Pull Request Rules
 
