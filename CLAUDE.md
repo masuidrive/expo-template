@@ -23,6 +23,22 @@ This is an Expo project using Dev Client + EAS Update for OTA (over-the-air) JS 
 - Native modules
 - Package name / app icon
 
+## Custom Commands
+
+This project provides the following custom commands for Claude Code:
+
+- **[js-build]** or `/js-build`: Deploy JS-only changes via EAS Update
+  - For UI, business logic, styling changes
+  - No native rebuild required
+  - Fast and free
+
+- **[native-build]** or `/dist-dev-client`: Build Dev Client APK/IPA
+  - Automatically handles Keystore generation prompts
+  - Environment-specific implementation:
+    - macOS: expect script
+    - Windows/Linux: Node.js + node-pty
+  - Required for native code changes
+
 ## Pull Request Rules
 
 When creating pull requests, add the appropriate build tag to the PR title or commit message:

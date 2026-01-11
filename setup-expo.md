@@ -29,7 +29,83 @@ EAS Update  → JS bundle（UI/ロジック）
 
 ---
 
-## 0. Claude Code で実行する際の確認（最初に必ず確認）
+## 0. 開発方式の選択（最初に必ず確認）
+
+Expo でアプリを開発する際、以下の2つの方式から選択します：
+
+### 方式 1: Expo Go + EAS Update（お試し・プロトタイプ向け）
+
+**特徴：**
+- ビルド不要、すぐに始められる
+- App Store/Google Play から「Expo Go」アプリをインストールするだけ
+- **EAS Update で OTA 配布可能**（ローカルサーバー不要）
+- 開発時のみローカル Metro bundler にも接続可能（オプション）
+
+**使える機能：**
+- ✅ Expo SDK に含まれる標準 API のみ（一部のAPIに制限）
+- ✅ iOS でも Apple 開発者アカウント不要
+- ✅ EAS Update で JS を OTA 配布（制限付き：runtimeVersion 非対応）
+- ✅ インターネット経由で配布可能（QR コード、URL）
+- ✅ Hot Reload で即座に変更が反映（開発時）
+- ✅ **ローカルサーバーが立てられない環境でも使える**
+
+**制限事項：**
+- ❌ カスタムネイティブモジュールは追加できない
+- ❌ ホーム画面に追加できない（Expo Go 経由でしか起動できない）
+- ❌ Expo Go に含まれる機能のみに制限される
+- ⚠️ EAS Update の一部機能が使えない（runtimeVersion など）
+
+**向いている人：**
+- まずは Expo を試してみたい
+- ローカルサーバーが立てられない環境（VM、リモート開発など）
+- 標準的な React Native 機能だけで十分
+- ビルド不要で OTA 配布したい
+
+---
+
+### 方式 2: Dev Client（本格的な開発向け）
+
+**特徴：**
+- 最初に1回だけネイティブアプリをビルド（Android APK または iOS IPA）
+- 以降は JS/UI の変更を EAS Update で OTA 配布（再ビルド不要）
+- 全ての API とカスタムネイティブモジュールが使用可能
+
+**使える機能：**
+- ✅ すべての Expo SDK API
+- ✅ カスタムネイティブモジュールの追加が可能
+- ✅ EAS Update による完全な OTA 配布
+- ✅ 本番に近い環境で開発できる
+- ✅ インターネット経由で配布可能（QR コード、URL）
+- ✅ ホーム画面に追加可能
+
+**必要な要件：**
+- **iOS の場合**: Apple 開発者アカウントが必要（年間 $99）
+- **Android の場合**: 2025年1月時点ではインストール可能
+  - ただし、Google の方針変更により条件が変わる可能性があります
+  - 最新情報は「android向けexpo dev clientのインストール条件の最新情報」で検索して確認してください
+
+**制限事項：**
+- ⏱ 初回ビルドに5〜10分かかる（EAS クラウドでビルド）
+- ⏱ ネイティブ変更時は再ビルドが必要
+- 💰 EAS の無料プランには月間ビルド回数制限あり
+
+**向いている人：**
+- 実機で本番に近い環境をテストしたい
+- EAS Update で継続的に配布したい
+- ローカルサーバーが立てられない環境（VM、Claude Code for Web など）
+- カスタムネイティブモジュールを使いたい
+- ホーム画面から直接起動できるアプリを作りたい
+
+---
+
+### 推奨
+
+- **初めて試す場合・ローカルサーバーが立てられない環境**: Expo Go + EAS Update
+- **本格的な開発・全機能を使いたい**: Dev Client + EAS Update
+
+---
+
+## 0-A. Claude Code で実行する際の確認手順
 
 この手順を Claude Code で実行する際は、**最初に必ず** `AskUserQuestion` ツールでユーザーに以下を確認すること：
 
@@ -39,21 +115,21 @@ EAS Update  → JS bundle（UI/ロジック）
 AskUserQuestion({
   questions: [
     {
-      question: "Android/iOS のネイティブビルド（Dev Client）を今すぐ作成しますか？",
-      header: "ビルド方式",
+      question: "どちらの開発方式で進めますか？",
+      header: "開発方式",
       multiSelect: false,
       options: [
         {
-          label: "はい、ネイティブビルドを作成する",
-          description: "EAS Build で Android APK（または iOS IPA）をビルドします。初回は5〜10分程度かかります。ビルド後は JS のみで OTA 更新可能になります。"
+          label: "Dev Client（本格的な開発）",
+          description: "全API使用可能、EAS Update完全サポート。iOS は Apple 開発者アカウント必須。初回ビルドに5〜10分。"
         },
         {
-          label: "いいえ、Expo Go で試したい",
-          description: "ローカルの Metro bundler を使って Expo Go アプリで動作確認します。ビルド不要ですが、EAS Update は使えません。"
+          label: "Expo Go + EAS Update（お試し・プロトタイプ）",
+          description: "ビルド不要、すぐ開始可能。EAS Updateで配信。標準APIのみ、ホーム画面追加不可。ローカルサーバー不要。"
         },
         {
           label: "詳しく説明してほしい",
-          description: "Dev Client と Expo Go の違い、それぞれのメリット・デメリットを詳しく説明します。"
+          description: "Dev Client と Expo Go の違い、それぞれの詳細を説明します。"
         }
       ]
     }
@@ -63,112 +139,118 @@ AskUserQuestion({
 
 ### 選択肢による処理の分岐
 
-#### 1. 「はい、ネイティブビルドを作成する」を選択した場合
+#### 1. 「Dev Client（本格的な開発）」を選択した場合
 
 → **この手順書の全ステップを実行**
 - セクション 1〜9 まで実行し、EAS Build でネイティブアプリをビルドする
-- 初回は Android Keystore の生成確認があるため、`expect` スクリプトを使用する（セクション 9 参照）
+- 初回は Android Keystore の生成確認があるため、環境に応じた自動化スクリプトを使用する（セクション 9 参照）
+  - macOS: expect スクリプト
+  - Windows/Linux: Node.js + pty 系ライブラリ
 - ビルド完了後、APK/IPA のダウンロード URL と QR コードが提供される
 
-#### 2. 「いいえ、Expo Go で試したい」を選択した場合
+#### 2. 「Expo Go + EAS Update（お試し・プロトタイプ）」を選択した場合
 
-→ **セクション 2〜4 のみ実行し、その後 Expo Go での起動方法を案内**
+→ **EAS Update で配信する手順を実行**
 
 実行する手順：
-1. セクション 2: プロジェクト作成
-2. セクション 7: Hello World を書く（App.tsx の編集）
-3. 以下のコマンドでローカル開発サーバーを起動：
 
+**1. eas-cli のインストール**
+```bash
+npm install -g eas-cli
+```
+
+**2. Expo アカウントでログイン**
+```bash
+eas login
+```
+
+**3. プロジェクト作成**
+```bash
+npx create-expo-app@latest APPNAME --template blank-typescript
+cd APPNAME
+```
+
+**4. expo-updates をインストール**
+```bash
+npx expo install expo-updates
+```
+
+**5. EAS プロジェクトを初期化**
+```bash
+eas init --non-interactive --force
+```
+
+**6. App.tsx を Hello World に編集**
+```typescript
+import { Text, View } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Hello World v1</Text>
+    </View>
+  );
+}
+```
+
+**7. EAS Update で配信**
+```bash
+eas update --branch production --message "Initial release"
+```
+
+初回実行時、`updates.url` と `runtimeVersion` が自動設定されます。
+
+**8. Expo Go でアクセス**
+
+配信完了後、以下の方法でアクセス：
+- EAS Dashboard の Update ページで QR コードをスキャン
+- または Expo Go アプリで Project URL を入力
+
+ユーザーに以下を案内：
+- iOS: App Store から「Expo Go」アプリをインストール → QR コードをスキャン
+- Android: Google Play から「Expo Go」アプリをインストール → QR コードをスキャン
+- **ローカルサーバー不要**でインターネット経由でアクセス可能
+
+**（オプション）ローカル開発する場合：**
 ```bash
 npx expo start
 ```
-
-4. ユーザーに以下を案内：
-   - iOS: App Store から「Expo Go」アプリをインストール → QR コードをスキャン
-   - Android: Google Play から「Expo Go」アプリをインストール → QR コードをスキャン
-   - Metro bundler にローカル接続して動作確認
+QR コードをスキャンしてローカル Metro bundler に接続。Hot Reload が使える。
 
 **注意事項をユーザーに伝える：**
-- ✅ すぐに動作確認できる（ビルド不要）
-- ✅ コード変更時に Hot Reload が効く
-- ❌ EAS Update による OTA 配布はできない
+- ✅ ビルド不要で EAS Update により OTA 配信
+- ✅ ローカルサーバーが立てられない環境でも使える
+- ✅ iOS でも Apple 開発者アカウント不要
+- ✅ インターネット経由で配布可能（QR コード、URL）
+- ⚠️ EAS Update の一部機能が使えない（runtimeVersion など）
+- ❌ 標準 API のみ（一部の API に制限）
 - ❌ カスタムネイティブモジュールは追加できない
-- ❌ ローカルネットワーク接続が必要
+- ❌ ホーム画面に追加できない（Expo Go 経由でしか起動できない）
 
-**以降のセクション（5〜9）は実行しない。**
+**以降の JS 更新：**
+App.tsx を編集後、以下のコマンドで配信：
+```bash
+eas update --branch production --message "変更内容"
+```
+
+Expo Go アプリを再起動すると、新しい Update が自動的にダウンロードされます。
+
+**以降のセクション（3〜9）は実行しない（Dev Client 用の手順）。**
 
 #### 3. 「詳しく説明してほしい」を選択した場合
 
-→ **以下の説明をユーザーに提示してから、再度確認する**
+→ **セクション 0 の詳細説明を再度提示してから、選択肢 1, 2 のみで再度確認する**
 
-```
-## Dev Client と Expo Go の違い
-
-### Dev Client（このドキュメントの方式）
-
-**何ができる？**
-- 最初に1回だけネイティブアプリをビルド（Android APK または iOS IPA）
-- 以降は JS/UI の変更を EAS Update で OTA 配布（再ビルド不要）
-- カスタムネイティブモジュールの追加が可能
-- Expo Go では使えないネイティブ機能（特定の権限、Intent など）が使える
-
-**メリット：**
-- ✅ 本番に近い環境で開発できる
-- ✅ EAS Update で JS を素早く配布（Web のデプロイに近い体験）
-- ✅ ネイティブ機能を自由に追加可能
-- ✅ インターネット経由で配布可能（QR コード、URL）
-
-**デメリット：**
-- ⏱ 初回ビルドに5〜10分かかる（EAS クラウドでビルド）
-- ⏱ ネイティブ変更時は再ビルドが必要
-- 💰 EAS の無料プランには月間ビルド回数制限あり
-
-**どんな人向け？**
-- 実機で本番に近い環境をテストしたい
-- EAS Update で継続的に配布したい
-- ローカルサーバーが立てられない環境（VM、Claude Code for Web など）
-- カスタムネイティブモジュールを使いたい
-
----
-
-### Expo Go（標準的な開発方式）
-
-**何ができる？**
-- Expo が提供する標準ランタイムアプリ（App Store/Google Play からインストール）
-- ローカルの Metro bundler に接続して開発
-- Expo に含まれる標準ネイティブモジュールのみ使用可能
-
-**メリット：**
-- ✅ ビルド不要、すぐに始められる
-- ✅ Hot Reload で即座に変更が反映
-- ✅ EAS Build の制限を気にしなくていい
-
-**デメリット：**
-- ❌ EAS Update による OTA 配布ができない
-- ❌ カスタムネイティブモジュールが追加できない
-- ❌ ローカルネットワーク接続が必要（LAN/USB）
-- ❌ Expo Go に含まれる機能のみに制限される
-
-**どんな人向け？**
-- まずは Expo を試してみたい
-- ローカルで素早くプロトタイプを作りたい
-- 標準的な React Native 機能だけで十分
-- ローカル環境で開発サーバーが立てられる
-
----
-
-**推奨：**
-- **初めて試す場合**: Expo Go でまず動作確認
-- **本格的な開発**: Dev Client + EAS Update
-
-どちらの方式で進めますか？
-```
+セクション 0 に記載されている以下の内容を表示：
+- 方式 1: Expo Go の特徴・使える機能・制限事項
+- 方式 2: Dev Client の特徴・使える機能・必要な要件・制限事項
+- 推奨
 
 説明後、再度最初の質問（選択肢 1, 2 のみ）を表示する。
 
 ---
 
-## 0-A. アプリ識別子を決める
+## 0-B. アプリ識別子を決める
 
 まず、アプリのディレクトリ名を決める。これがプロジェクト名になる。
 
@@ -179,6 +261,10 @@ npx expo start
 ---
 
 ## 1. 事前準備
+
+**注意**:
+- **Expo Go + EAS Update** を選択した場合: 上記セクション 0-A の手順 1-2 で実施済みのため、セクション 2 に進んでください
+- **Dev Client** を選択した場合: このセクションを実施してください
 
 ### eas-cli のインストール
 
@@ -302,7 +388,7 @@ eas update --branch dev --message "hello v1"
 
 ---
 
-## 9. Dev Client をビルド
+## 9. Dev Client のビルド自動化（Keystore 対応）
 
 ```bash
 eas build -p android --profile dev
@@ -316,25 +402,76 @@ eas build -p android --profile dev
 * Free tier は queue 待ちあり（数分〜）
 * 完了後、**APK の URL と QR コード** が出る
 
-### Claude Code などの非対話環境での実行
+### 環境別の推奨方法
 
-EAS CLI はインタラクティブな入力（Keystore 生成の確認など）を要求するため、`--non-interactive` フラグでは初回ビルドが失敗する。
+EAS Build の初回実行時、Android Keystore の生成確認が表示されます。Claude Code は環境に応じて自動的に処理します。
 
-**解決方法**: 疑似端末（PTY）を使ってプロンプトに自動応答するツールを使用する。
+#### macOS: expect スクリプト
 
-#### クロスプラットフォーム対応（推奨）
+expect コマンドを使用して自動化します：
 
-Node.js の `node-pty` パッケージを使うことで、Windows、macOS、Linux で動作する自動化スクリプトを作成できる。
+```bash
+#!/usr/bin/expect -f
+set timeout -1
+spawn npx eas build -p android --profile dev
+expect {
+    "Generate a new Android Keystore?" {
+        send "y\r"
+        exp_continue
+    }
+    eof
+}
+wait
+```
+
+**使用方法**:
+1. 上記内容を `eas-build-auto.exp` として保存
+2. 実行権限を付与: `chmod +x eas-build-auto.exp`
+3. 実行: `./eas-build-auto.exp`
+
+#### Windows/Linux: Node.js + node-pty
+
+node-pty ライブラリを使用して自動化します：
 
 ```bash
 npm install node-pty
 ```
 
-このパッケージを使って、EAS CLI のプロンプト（"Generate a new Android Keystore?" など）を検知して自動的に "y" を送信するスクリプトを作成すれば、非対話環境でもビルドが実行できる。
+```javascript
+const pty = require('node-pty');
+const os = require('os');
 
-#### Unix/Linux/macOS のみ
+const shell = os.platform() === 'win32' ? 'cmd.exe' : 'bash';
+const ptyProcess = pty.spawn('npx', ['eas', 'build', '-p', 'android', '--profile', 'dev'], {
+  name: 'xterm-color',
+  cwd: process.cwd(),
+  env: process.env
+});
 
-`expect` コマンド（標準でインストール済み）を使う方法もある。ただし Windows では動作しない。
+ptyProcess.on('data', (data) => {
+  process.stdout.write(data);
+  if (data.includes('Generate a new Android Keystore?')) {
+    ptyProcess.write('y\r');
+  }
+});
+
+ptyProcess.on('exit', (code) => {
+  process.exit(code);
+});
+```
+
+**使用方法**:
+1. 上記内容を `eas-build-auto.js` として保存
+2. 実行: `node eas-build-auto.js`
+
+### Claude Code での実行
+
+`/dist-dev-client` コマンドを実行すると、Claude Code が自動的に：
+1. 現在のプラットフォームを検出
+2. 適切な自動化スクリプトを生成
+3. EAS Build を実行し、Keystore 確認に自動応答
+
+**重要**: 実装の詳細は実行時に Claude Code が環境に応じて決定します。
 
 ---
 
