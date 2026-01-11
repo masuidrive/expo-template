@@ -2,7 +2,7 @@
 
 Dev Client APK/IPA を EAS Build で配信します。
 
-**注意**: `npx` コマンドはプロジェクトルート（.git がある場所）から実行してください。
+**注意**: `npx` コマンドはアプリルート（APPNAME ディレクトリ内、.git ルートではない）から実行してください。
 
 ## 実行方法
 
@@ -14,7 +14,7 @@ Claude Code がプラットフォームに応じて自動的に Keystore 生成�
 ### 基本コマンド
 
 ```bash
-cd APPNAME
+cd APPNAME  # プロジェクトルートからアプリディレクトリに移動
 npx eas build -p android --profile dev
 ```
 
