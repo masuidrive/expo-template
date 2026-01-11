@@ -9,6 +9,30 @@ This is an Expo project using Dev Client + EAS Update for OTA (over-the-air) JS 
 - **Dev Client**: Native app built once, acts as the runtime environment
 - **EAS Update**: JS bundle distributed via CDN, no rebuild needed for UI/logic changes
 
+## Expo Go の勘違いしやすい所
+
+### Expo Go でも EAS Update (/ota) は使える
+
+**誤解**: 「Expo Go では EAS Update が使えない」
+**正解**: **Expo Go でも EAS Update は使えます**
+
+- `/ota` コマンドで JS バンドルを配信できる
+- Expo Go アプリの **Extensions タブ**（または Updates タブ）から公開済み Update を選択して実行できる
+- 開発サーバーなしで、配信された Update をダウンロードして実行可能
+
+### runtimeVersion の有無
+
+**Expo Go の特徴**:
+- `runtimeVersion` による厳密な互換性チェックは行われない
+- 代わりに **Expo SDK バージョン**（例: SDK 52）で互換性を管理
+- Expo が提供する標準 API のみ使用するため、開発者として使う分には困ることはない
+
+**Dev Client との違い**:
+- **Dev Client**: カスタムネイティブモジュールを使う場合、`runtimeVersion` で互換性を厳密に管理
+- **Expo Go**: 固定のネイティブランタイムを使うため、SDK バージョンの互換性のみ気にすればよい
+
+**結論**: 学習やプロトタイプ開発で Expo Go を使う場合、`runtimeVersion` がなくても実用上の問題はありません。
+
 ## What Can Be Updated via EAS Update (no rebuild)
 
 - UI components and screens
