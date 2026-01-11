@@ -51,11 +51,11 @@ Expo を使って iOS/Android アプリの開発環境を構築する手順で�
 
 ## 前提条件
 
-### Expo Go の場合
+### Expo Go（開発サーバーパターン）の場合
 
 特に事前準備は不要です。プロジェクト作成から開始できます。
 
-### Dev Client の場合
+### Expo Go（OTA 配信パターン）または Dev Client の場合
 
 以下を事前にインストール・ログインしておいてください：
 
@@ -68,6 +68,10 @@ eas login
 ```
 
 **Expo アカウント**: https://expo.dev でアカウント作成が必要です。
+
+**理由**:
+- OTA 配信パターンでは EAS Update を使用するため、`eas-cli` と Expo アカウントが必要
+- Dev Client でも EAS Build と EAS Update を使用するため同様に必要
 
 ---
 
