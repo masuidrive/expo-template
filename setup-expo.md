@@ -424,10 +424,33 @@ expect {
 wait
 ```
 
-**使用方法**:
-1. 上記内容を `eas-build-auto.exp` として保存
-2. 実行権限を付与: `chmod +x eas-build-auto.exp`
-3. 実行: `./eas-build-auto.exp`
+**推奨される使用方法（一時ファイルを自動削除）**:
+```bash
+# 一時スクリプトを生成して実行
+SCRIPT_NAME="eas-build-auto-$$.exp"
+cat > "$SCRIPT_NAME" << 'EOF'
+#!/usr/bin/expect -f
+set timeout -1
+spawn npx eas build -p android --profile dev
+expect {
+    "Generate a new Android Keystore?" {
+        send "y\r"
+        exp_continue
+    }
+    eof
+}
+wait
+EOF
+
+chmod +x "$SCRIPT_NAME"
+"./$SCRIPT_NAME"
+EXIT_CODE=$?
+
+# 終了後に一時ファイルを削除
+rm -f "$SCRIPT_NAME"
+
+exit $EXIT_CODE
+```
 
 #### Windows/Linux: Node.js + node-pty
 
@@ -440,6 +463,9 @@ npm install node-pty
 ```javascript
 const pty = require('node-pty');
 const os = require('os');
+const fs = require('fs');
+
+const scriptPath = __filename; // 自身のパス
 
 const shell = os.platform() === 'win32' ? 'cmd.exe' : 'bash';
 const ptyProcess = pty.spawn('npx', ['eas', 'build', '-p', 'android', '--profile', 'dev'], {
@@ -456,22 +482,41 @@ ptyProcess.on('data', (data) => {
 });
 
 ptyProcess.on('exit', (code) => {
+  // 終了時に一時ファイルを削除
+  try {
+    fs.unlinkSync(scriptPath);
+  } catch (err) {
+    // 削除失敗は無視
+  }
   process.exit(code);
+});
+
+// プロセス終了時のクリーンアップ
+process.on('SIGINT', () => {
+  try {
+    fs.unlinkSync(scriptPath);
+  } catch (err) {
+    // 削除失敗は無視
+  }
+  process.exit(130);
 });
 ```
 
 **使用方法**:
-1. 上記内容を `eas-build-auto.js` として保存
-2. 実行: `node eas-build-auto.js`
+1. 一時ファイル名を生成（例: `eas-build-auto-${Date.now()}.js`）
+2. 上記内容を一時ファイルとして保存
+3. 実行: `node <一時ファイル名>`
+4. スクリプトが終了時に自動的に自身を削除
 
 ### Claude Code での実行
 
 `/dist-dev-client` コマンドを実行すると、Claude Code が自動的に：
 1. 現在のプラットフォームを検出
-2. 適切な自動化スクリプトを生成
+2. 適切な自動化スクリプトを一時ファイルとして生成
 3. EAS Build を実行し、Keystore 確認に自動応答
+4. **実行終了後、一時ファイルを自動削除**
 
-**重要**: 実装の詳細は実行時に Claude Code が環境に応じて決定します。
+**重要**: 実装の詳細は実行時に Claude Code が環境に応じて決定します。一時スクリプトは必ず削除されます。
 
 ---
 
