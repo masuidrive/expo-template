@@ -283,79 +283,62 @@ App.tsx を編集後、Claude Code で **`/ota`** を実行するだけ。
 
 ---
 
-## 1. 事前準備
+## 1-7. プロジェクトセットアップ
 
-**注意**:
-- **Expo Go + EAS Update** を選択した場合: 上記セクション 0-A の手順 1-2 で実施済みのため、セクション 2 に進んでください
-- **Dev Client** を選択した場合: このセクションを実施してください
+### Claude Code でセットアップする場合（推奨）
 
-### eas-cli のインストール
+Claude Code で **`/setup-expo-project`** を実行します。
+
+スキルが自動的に：
+1. プロジェクト名を確認
+2. 前提条件（eas-cli、ログイン）を確認
+3. Expo プロジェクトを作成
+4. expo-dev-client と expo-updates をインストール
+5. expo prebuild と eas init を実行
+6. eas.json を作成（dev プロファイル）
+7. Hello World App.tsx を作成
+
+### 前提条件
+
+スキル実行前に以下が必要：
+- **eas-cli**: `npm install -g eas-cli`
+- **Expo ログイン**: `eas login`
+
+スキルが自動的に確認し、未完了の場合は案内します。
+
+### 手動でセットアップする場合
+
+<details>
+<summary>詳細手順を表示</summary>
+
+#### 1. 事前準備
 
 ```bash
 npm install -g eas-cli
-```
-
-※ `npx eas` でも動くが、グローバルインストール推奨。
-
-### Expo アカウント
-
-https://expo.dev でアカウント作成し、ログインしておく。
-
-```bash
 eas login
 ```
 
----
-
-## 2. プロジェクト作成
+#### 2. プロジェクト作成
 
 ```bash
 npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 ```
 
-TypeScript / router の有無はどれでもよい。
-
----
-
-## 3. Dev Client を有効化
-
-Dev Client は「開発用のスタンドアロン Expo アプリ」。
+#### 3-4. Dev Client と expo-updates をインストール
 
 ```bash
-npx expo install expo-dev-client
+npx expo install expo-dev-client expo-updates
 ```
 
-これで **Expo Go ではなく、自前アプリ**として起動できるようになる。
-
----
-
-## 4. expo-updates をインストール
-
-EAS Update を使うには `expo-updates` が必要。**先にインストールしておく**ことで、後の再ビルドを防げる。
-
-```bash
-npx expo install expo-updates
-```
-
----
-
-## 5. EAS 初期化
+#### 5. EAS 初期化
 
 ```bash
 npx expo prebuild --platform android
 eas init --non-interactive --force
 ```
 
-* Expo アカウントにログイン済みであること
-* projectId が作られる
-* `app.json` に projectId が追加される
-
----
-
-## 6. `eas.json`（最小・Free前提）
-
-プロジェクトルートに `eas.json` を作成：
+#### 6. eas.json を作成
 
 ```json
 {
@@ -372,18 +355,7 @@ eas init --non-interactive --force
 }
 ```
 
-ポイント：
-
-* profile は **dev 1つだけ**
-* `channel: "dev"` で Update の branch と紐付け
-* APK で internal 配布（Play不要）
-* Free プランで十分
-
----
-
-## 7. Hello World を書く
-
-`App.tsx`
+#### 7. Hello World を書く
 
 ```tsx
 import { Text, View } from "react-native";
@@ -396,6 +368,8 @@ export default function App() {
   );
 }
 ```
+
+</details>
 
 ---
 
@@ -566,6 +540,21 @@ EAS の Free プランには Build 回数や Update の MAU（月間アクティ
 
 ## コマンドまとめ
 
+### Claude Code を使う場合（推奨）
+
+```bash
+# 前提条件（1回のみ）
+npm install -g eas-cli
+eas login
+
+# プロジェクトセットアップ - Claude Code で `/setup-expo-project` を実行
+# 初回 Update - Claude Code で `/ota` を実行
+# ビルド - Claude Code で `/dist-dev-client` を実行
+# 以降の更新 - Claude Code で `/ota` を実行
+```
+
+### 手動で実行する場合
+
 ```bash
 # 初期セットアップ
 npm install -g eas-cli
@@ -577,10 +566,17 @@ npx expo prebuild --platform android
 eas init --non-interactive --force
 
 # eas.json を作成（channel: "dev" を忘れずに）
+# App.tsx を作成
 
-# 初回 Update - Claude Code で `/ota` を実行
-# ビルド - Claude Code で `/dist-dev-client` を実行
-# 以降の更新 - Claude Code で `/ota` を実行
+# 初回 Update
+cd APPNAME
+eas update --branch dev --message "hello v1"
+
+# ビルド
+eas build -p android --profile dev
+
+# 以降の更新
+eas update --branch dev --message "変更内容"
 ```
 
 ---
