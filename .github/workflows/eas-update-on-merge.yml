@@ -9,7 +9,7 @@ jobs:
   eas_update:
     # Run only if PR was merged AND doesn't have 'native' label
     if: |
-      github.event.pull_request.merged == true && contains(github.event.pull_request.body, '[js-build]')
+      github.event.pull_request.merged == true && contains(github.event.pull_request.body, '[ota]')
     runs-on: ubuntu-latest
     defaults:
       run:

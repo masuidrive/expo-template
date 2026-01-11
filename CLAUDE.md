@@ -47,7 +47,7 @@ This project provides the following custom skills for Claude Code:
 
 When creating pull requests, add the appropriate build tag to the PR title or commit message:
 
-- **[ota]** or **[js-build]**: For JS-only changes (UI, logic, components) that can be deployed via EAS Update
-- **[native-build]**: For changes that require native rebuild (permissions, native modules, deep links, etc.)
+- **[ota]**: For JS-only changes (UI, logic, components) that can be deployed via EAS Update
+- **[dist-dev-client]**: For changes that require native rebuild (permissions, native modules, deep links, etc.)
 
 This helps identify which type of deployment is needed for each change.
