@@ -401,52 +401,19 @@ export default function App() {
 
 ## 8. 初回 Update を配布
 
-**ビルドの前に** Update を配布しておく。
+ビルドの前に Update を配布しておきます。
 
-### Claude Code で配布する場合（推奨）
-
-Claude Code で **`/ota`** を実行するだけです。
+Claude Code で **`/ota`** を実行します。
 
 初回実行時に `updates.url` と `runtimeVersion` が自動設定されます。
-
-### 手動で配布する場合
-
-```bash
-cd APPNAME
-eas update --branch dev --message "hello v1"
-```
 
 ---
 
 ## 9. Dev Client のビルド
 
-### Claude Code でビルドする場合（推奨）
+Claude Code で **`/dist-dev-client`** を実行します。
 
-Claude Code で **`/dist-dev-client`** を実行するだけです。
-
-スキルが自動的に：
-1. 現在のプラットフォームを検出（macOS/Windows/Linux）
-2. Android Keystore 生成プロンプトに自動応答
-3. EAS Build を実行
-4. 一時スクリプトを自動削除
-
-**初回実行時の注意**:
-- Android Keystore の生成確認が表示されますが、自動的に "yes" で応答されます
-- Keystore は EAS が自動生成・管理します
-
-### 手動でビルドする場合
-
-```bash
-cd APPNAME
-eas build -p android --profile dev
-```
-
-「Generate a new Android Keystore?」と聞かれたら **Yes** を選択してください。
-
-### ビルド完了後
-
-* ビルドは **Expo のクラウド**で実行
-* Free tier は queue 待ちあり（数分〜）
+* ビルドは Expo のクラウドで実行（5〜10分）
 * 完了後、**APK の URL と QR コード** が表示される
 
 ---
@@ -503,18 +470,7 @@ Dev Client は**開発用**なので、複数の Update を切り替えてテス
 <Text>Hello World v2</Text>
 ```
 
-### Claude Code で更新する場合（推奨）
-
-Claude Code で **`/ota`** を実行するだけです。
-
-### 手動で更新する場合
-
-```bash
-cd APPNAME
-eas update --branch dev --message "hello v2"
-```
-
-これだけ。
+Claude Code で **`/ota`** を実行します。
 
 * 再ビルド不要
 * APK の再インストール不要
@@ -610,8 +566,6 @@ EAS の Free プランには Build 回数や Update の MAU（月間アクティ
 
 ## コマンドまとめ
 
-### Claude Code を使用する場合（推奨）
-
 ```bash
 # 初期セットアップ
 npm install -g eas-cli
@@ -627,30 +581,6 @@ eas init --non-interactive --force
 # 初回 Update - Claude Code で `/ota` を実行
 # ビルド - Claude Code で `/dist-dev-client` を実行
 # 以降の更新 - Claude Code で `/ota` を実行
-```
-
-### 手動実行する場合
-
-```bash
-# 初期セットアップ
-npm install -g eas-cli
-eas login
-npx create-expo-app@latest APPNAME --template blank-typescript
-cd APPNAME
-npx expo install expo-dev-client expo-updates
-npx expo prebuild --platform android
-eas init --non-interactive --force
-
-# eas.json を作成（channel: "dev" を忘れずに）
-
-# 初回 Update
-eas update --branch dev --message "hello v1"
-
-# ビルド
-eas build -p android --profile dev
-
-# 以降の更新（再ビルド不要）
-eas update --branch dev --message "変更内容"
 ```
 
 ---
