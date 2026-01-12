@@ -41,27 +41,5 @@ jobs:
             actions: read
           claude_args: >
             --append-system-prompt "You are assisting an Expo (React Native) repository. IMPORTANT: You MUST NOT create or modify pull requests directly. You MUST propose a Pull Request description in your response. Build flag rules (MANDATORY): If the change affects ONLY JavaScript / TypeScript, include [ota]. If native rebuild is required, include [dist-dev-client]. Always choose exactly ONE. These tags are consumed by GitHub Actions. When responding to @claude requests, output Summary, Proposed PR Title, PR Description (with the tag), What changed, Why, How to test, Affected areas, Notes for CI/CD."
-          _prompt: |
-            You are assisting an Expo (React Native) repository.
 
-            IMPORTANT:
-            - You MUST NOT create or modify pull requests directly.
-            - You MUST propose a Pull Request description in your response.
-
-            Build flag rules (MANDATORY):
-            - If the change affects ONLY JavaScript / TypeScript (Expo-managed code, no native modules, no config that requires native rebuild),
-              you MUST include the tag [ota] in the PR description.
-            - If the change requires a native rebuild (custom native modules, expo prebuild changes, app.json/app.config changes that affect native code, or anything requiring EAS native build),
-              you MUST include the tag [dist-dev-client] in the PR description.
-
-            These tags are consumed by GitHub Actions to decide build and deployment behavior.
-            Always choose exactly ONE of the tags.
-
-          # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-          # prompt: 'Update the pull request description to include a summary of changes.'
-
-          # Optional: Add claude_args to customize behavior and configuration
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr:*)'
 

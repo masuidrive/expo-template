@@ -1,6 +1,6 @@
 # Developer's Guide
 
-コーディングエージェント（Claude Code など）を使った開発ガイド
+コーディングエージェント（Claude Code など）を使ったExpo開発ガイド
 
 ## 環境構築
 
@@ -12,7 +12,26 @@
 
 ## 開発フロー
 
-### 1. JS/UI 変更の配信: `/ota`
+### 1. 開発サーバーの起動: `/dev-server`
+
+ローカル開発用の Expo 開発サーバーを起動・停止します。
+
+**使用例:**
+```
+/dev-server start   # サーバー起動
+/dev-server stop    # サーバー停止
+```
+
+**用途:**
+- ローカルでのコード変更を即座に反映
+- Expo Go や Dev Client からアクセス
+- ホットリロードで開発効率向上
+
+**注意:** `/ota` で配信する場合は不要（オプション機能）
+
+---
+
+### 2. JS/UI 変更の配信: `/ota`
 
 JS コードや UI の変更を EAS Update で配信します。ネイティブビルドは不要です。
 
@@ -34,7 +53,7 @@ JS コードや UI の変更を EAS Update で配信します。ネイティブ�
 
 ---
 
-### 2. Dev Client のセットアップ: `/setup-dev-client`
+### 3. Dev Client のセットアップ: `/setup-dev-client`
 
 Expo Go から Dev Client に移行する際、または新規に Dev Client 環境をセットアップします。
 
@@ -57,7 +76,7 @@ Expo Go から Dev Client に移行する際、または新規に Dev Client 環
 
 ---
 
-### 3. ネイティブビルドの配信: `/dist-dev-client`
+### 4. ネイティブビルドの配信: `/dist-dev-client`
 
 Dev Client APK/IPA をビルドして配信します。
 
@@ -82,25 +101,36 @@ Dev Client APK/IPA をビルドして配信します。
 
 ## 開発パターン
 
-### パターン1: Expo Go（学習・プロトタイプ）
+### パターン1: ローカル開発（Expo Go）
+```
+1. 環境構築
+2. /dev-server start
+3. Expo Go アプリでスキャンして接続
+4. コード変更がホットリロードで即座に反映
+```
+
+### パターン2: OTA 配信（Expo Go）
 ```
 1. 環境構築
 2. /ota で配信
 3. Expo Go アプリの Extensions タブから確認
 ```
 
-### パターン2: Dev Client（本格開発）
+### パターン3: Dev Client（本格開発）
 ```
 1. 環境構築
 2. /setup-dev-client
 3. /dist-dev-client（初回のみ）
-4. /ota で JS 更新
+4. /dev-server または /ota で開発
 5. ネイティブ変更時のみ /dist-dev-client
 ```
 
 ---
 
 ## よくある質問
+
+**Q: /dev-server と /ota の違いは?**
+A: `/dev-server` はローカル開発用（即座に反映）、`/ota` は配信用（サーバー不要）
 
 **Q: /ota と /dist-dev-client の使い分けは?**
 A: JS/UI 変更は `/ota`、ネイティブ変更は `/dist-dev-client`
