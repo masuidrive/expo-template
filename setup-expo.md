@@ -55,8 +55,11 @@ Expo を使って iOS/Android アプリの開発環境を構築する手順で�
 事前に Expo アカウントでログインしておいてください：
 
 ```bash
-# Expo アカウントでログイン
-npx eas-cli@latest login
+# ログイン状態を確認
+npx -y eas-cli@latest whoami
+
+# ログインしていない場合は、Expo アカウントでログイン
+npx -y eas-cli@latest login
 ```
 
 **Expo アカウント**: https://expo.dev でアカウント作成が必要です。
@@ -64,7 +67,7 @@ npx eas-cli@latest login
 **理由**:
 - Expo Go でも EAS Update（`/ota` コマンド）を使用するため、Expo アカウントが必要
 - Dev Client では EAS Build と EAS Update の両方を使用するため同様に必要
-- `npx eas-cli@latest` を使うことで、常に最新版を使用できます
+- `npx -y eas-cli@latest` を使うことで、確認なしで常に最新版を使用できます
 
 ---
 
@@ -141,7 +144,7 @@ export default function App() {
 初回のみ、EAS プロジェクトを初期化します：
 
 ```bash
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 ```
 
 これにより、`app.json` に EAS projectId が追加されます。
@@ -256,21 +259,21 @@ npx expo install expo-dev-client expo-updates
 
 ```bash
 npx expo prebuild --platform android
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 ```
 
 ### iOS の場合
 
 ```bash
 npx expo prebuild --platform ios
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 ```
 
 ### 両方の場合
 
 ```bash
 npx expo prebuild --platform all
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 ```
 
 これにより：
@@ -525,7 +528,7 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 # App.tsx を編集
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 
 # Claude Code で実行
 /ota  # Update を配信
@@ -570,7 +573,7 @@ npx expo prebuild --platform ios      # iOS のみ
 # または
 npx expo prebuild --platform all      # 両方
 
-npx eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest init --non-interactive --force
 
 # eas.json を作成（プラットフォームに応じた設定）
 # App.tsx を編集
@@ -619,7 +622,7 @@ npx eas-cli@latest init --non-interactive --force
 
 ### Q4. eas init がエラーになる
 
-**A**: `npx eas-cli@latest init --non-interactive --force` を使ってください。
+**A**: `npx -y eas-cli@latest init --non-interactive --force` を使ってください。
 
 ### Q5. 開発サーバーはいつ使うべきか？
 
