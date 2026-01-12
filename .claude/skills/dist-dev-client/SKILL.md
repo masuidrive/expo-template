@@ -138,6 +138,10 @@ cd APPNAME  # Move from project root to app directory
 
 ### 3. Execute Build with Platform-Specific Automation
 
+**CRITICAL: Temporary Script Cleanup**
+
+The automation scripts MUST be deleted after execution to avoid leaving temporary files in the project directory. Both implementations (expect and node-pty) include automatic cleanup mechanisms.
+
 **IMPORTANT: Run in Background**
 
 EAS Build takes significant time to complete:
@@ -194,7 +198,7 @@ exit $EXIT_CODE
 **Key points**:
 - **MUST use `run_in_background: true`** to avoid blocking
 - Use process ID (`$$`) for unique filename
-- Delete script after execution
+- **Script MUST be deleted after execution with `rm -f "$SCRIPT_NAME"`**
 - Use `npx eas-cli@latest` to ensure latest version
 
 #### For Windows/Linux:
@@ -250,6 +254,8 @@ process.on('SIGINT', () => {
 EOF
 
 node "$SCRIPT_NAME"
+# Backup cleanup in case self-deletion failed
+rm -f "$SCRIPT_NAME"
   `,
   description: "Execute EAS build with automatic Keystore generation",
   run_in_background: true,
@@ -260,7 +266,7 @@ node "$SCRIPT_NAME"
 **Key points**:
 - **MUST use `run_in_background: true`** to avoid blocking
 - Check if node-pty is installed (if not, inform user to install it)
-- Script deletes itself on exit or interrupt
+- **Script deletes itself on exit or interrupt, with backup cleanup**
 - Use `npx eas-cli@latest` to ensure latest version
 
 ### 4. Monitor Build Progress
