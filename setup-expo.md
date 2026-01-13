@@ -146,7 +146,48 @@ cd APPNAME
 
 **APPNAME** は任意のプロジェクト名に置き換えてください（例: `hello-world`）。
 
-### A-2. Hello World を作成
+### A-2. GitHub Actions のディレクトリ名を修正
+
+**GitHub Actions を使用する場合のみ必要な手順です。**
+
+`.github/workflows/` 内の3つのファイルで、`APPNAME` を実際のアプリ名に置き換えてください：
+
+- `verify.yml`
+- `eas-update-on-merge.yml`
+- `eas-build-android-on-merge.yml`
+
+各ファイルで以下の2箇所を修正：
+
+```yaml
+defaults:
+  run:
+    working-directory: APPNAME  # ← 実際のアプリ名に変更
+
+# ...
+
+- uses: actions/setup-node@v4
+  with:
+    node-version: 20
+    cache: npm
+    cache-dependency-path: APPNAME/package-lock.json  # ← 実際のアプリ名に変更
+```
+
+**例**: アプリ名が `my-app` の場合
+
+```yaml
+working-directory: my-app
+cache-dependency-path: my-app/package-lock.json
+```
+
+修正後、コミットしてプッシュしてください：
+
+```bash
+git add .github/workflows/
+git commit -m "Update workflow directory to match app name"
+git push
+```
+
+### A-3. Hello World を作成
 
 `App.tsx` を編集（または作成）：
 
@@ -162,9 +203,9 @@ export default function App() {
 }
 ```
 
-### A-3. EAS 初期化と設定ファイル生成
+### A-4. EAS 初期化と設定ファイル生成
 
-#### A-3-1. EAS プロジェクトを初期化
+#### A-4-1. EAS プロジェクトを初期化
 
 ```bash
 npx -y eas-cli@latest init --non-interactive --force
@@ -172,7 +213,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 これにより、`app.json` に EAS projectId が追加されます。
 
-#### A-3-2. eas.json を生成
+#### A-4-2. eas.json を生成
 
 ```bash
 npx -y eas-cli@latest build:configure
@@ -184,7 +225,7 @@ npx -y eas-cli@latest build:configure
 - `eas.json` が生成される（development, preview, production プロファイル）
 - GitHub Actions で必要な設定ファイルがコミット可能になる
 
-#### A-3-3. EAS Update を設定
+#### A-4-3. EAS Update を設定
 
 ```bash
 npx -y eas-cli@latest update:configure
@@ -194,7 +235,7 @@ npx -y eas-cli@latest update:configure
 - `app.json` に `updates.url` と `runtimeVersion` が追加される
 - `eas.json` に各プロファイルの `channel` 設定が追加される
 
-#### A-3-4. 設定ファイルをコミット
+#### A-4-4. 設定ファイルをコミット
 
 ```bash
 git add app.json eas.json
@@ -204,13 +245,13 @@ git push
 
 **重要**: GitHub Actions が eas.json を参照するため、必ずコミットしてください。
 
-#### A-3-5. 初回 Update を配信
+#### A-4-5. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
 これにより、JS バンドルが EAS の CDN にアップロードされます。
 
-### A-4. Expo Go でアプリを確認
+### A-5. Expo Go でアプリを確認
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -227,7 +268,7 @@ git push
    - 表示された Update の **「Open」** をタップ
    - 「Hello World v1」が表示される
 
-### A-5. 基本的な開発フロー
+### A-6. 基本的な開発フロー
 
 #### JS/UI の変更（再配信）
 
@@ -240,11 +281,11 @@ git push
 
 ---
 
-### A-6. 開発サーバーの使用（オプション）
+### A-7. 開発サーバーの使用（オプション）
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
 
-**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（A-5）を使用してください。
+**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（A-6）を使用してください。
 
 #### 開発サーバーを起動
 
@@ -294,7 +335,50 @@ cd APPNAME
 
 ---
 
-## B-2. Dev Client と expo-updates をインストール
+## B-2. GitHub Actions のディレクトリ名を修正
+
+**GitHub Actions を使用する場合のみ必要な手順です。**
+
+`.github/workflows/` 内の3つのファイルで、`APPNAME` を実際のアプリ名に置き換えてください：
+
+- `verify.yml`
+- `eas-update-on-merge.yml`
+- `eas-build-android-on-merge.yml`
+
+各ファイルで以下の2箇所を修正：
+
+```yaml
+defaults:
+  run:
+    working-directory: APPNAME  # ← 実際のアプリ名に変更
+
+# ...
+
+- uses: actions/setup-node@v4
+  with:
+    node-version: 20
+    cache: npm
+    cache-dependency-path: APPNAME/package-lock.json  # ← 実際のアプリ名に変更
+```
+
+**例**: アプリ名が `my-app` の場合
+
+```yaml
+working-directory: my-app
+cache-dependency-path: my-app/package-lock.json
+```
+
+修正後、コミットしてプッシュしてください：
+
+```bash
+git add .github/workflows/
+git commit -m "Update workflow directory to match app name"
+git push
+```
+
+---
+
+## B-3. Dev Client と expo-updates をインストール
 
 ```bash
 npx expo install expo-dev-client expo-updates
@@ -305,7 +389,7 @@ npx expo install expo-dev-client expo-updates
 
 ---
 
-## B-3. EAS 初期化
+## B-4. EAS 初期化
 
 ### Android の場合
 
@@ -334,7 +418,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 ---
 
-## B-4. eas.json を作成
+## B-5. eas.json を作成
 
 プロジェクトルートに `eas.json` を作成：
 
@@ -401,7 +485,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 ---
 
-## B-5. Hello World を作成
+## B-6. Hello World を作成
 
 `App.tsx` を編集（または作成）：
 
@@ -419,7 +503,7 @@ export default function App() {
 
 ---
 
-## B-6. 設定ファイルをコミット
+## B-7. 設定ファイルをコミット
 
 ```bash
 git add app.json eas.json android/ ios/  # プラットフォームに応じて
@@ -431,7 +515,7 @@ git push
 
 ---
 
-## B-7. 初回 Update を配信
+## B-8. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
@@ -441,7 +525,7 @@ git push
 
 ---
 
-## B-8. Dev Client をビルド
+## B-9. Dev Client をビルド
 
 **Claude Code で `/dist-dev-client` を実行**します。
 
@@ -454,7 +538,7 @@ git push
 
 ---
 
-## B-9. 端末にインストール（ユーザー操作）
+## B-10. 端末にインストール（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -492,7 +576,7 @@ git push
 
 ---
 
-## B-10. アプリ起動と Update のロード（ユーザー操作）
+## B-11. アプリ起動と Update のロード（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -519,7 +603,7 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ---
 
-## B-11. 基本的な開発フロー
+## B-12. 基本的な開発フロー
 
 ### JS/UI のみの変更
 
@@ -545,11 +629,11 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ---
 
-### B-12. 開発サーバーの使用（オプション）
+### B-13. 開発サーバーの使用（オプション）
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
 
-**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（B-11）を使用してください。
+**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（B-12）を使用してください。
 
 #### 開発サーバーを起動
 
