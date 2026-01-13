@@ -149,6 +149,40 @@ PR タイトルまたはコミットメッセージに、以下のタグを含�
 
 ---
 
+## GitHub Actions の設定（オプション）
+
+GitHub Actions で自動デプロイを設定する場合、以下の手順が必要です。
+
+### 1. EXPO_TOKEN の取得
+
+1. https://expo.dev/accounts/[your-account]/settings/access-tokens にアクセス
+2. "Create Token" でトークン発行（スコープは write 推奨）
+3. トークン文字列（`ey...`）をコピー
+
+### 2. GitHub Secrets に登録
+
+1. GitHub リポジトリの **Settings > Secrets and variables > Actions > Secrets**
+2. **New repository secret**
+   - Name: `EXPO_TOKEN`
+   - Value: コピーしたトークン
+
+### 3. Claude Code で GitHub App をインストール（Claude Code 使用時のみ）
+
+```
+/github-app-install
+```
+
+### 完了
+
+これで、Pull Request をマージすると自動的に以下が実行されます:
+
+- **[ota]** タグ付き PR → EAS Update で JS バンドル配信
+- **[dist-dev-client]** タグ付き PR → EAS Build で APK/IPA ビルド
+
+詳細は [setup-gh-actions.md](./setup-gh-actions.md) を参照してください。
+
+---
+
 ## よくある質問
 
 **Q: /dev-server と /ota の違いは?**
