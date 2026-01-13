@@ -124,6 +124,19 @@ export EXPO_TOKEN=your_token_here
 - Dev Client では EAS Build と EAS Update の両方を使用するため同様に必要
 - `npx -y eas-cli@latest` を使うことで、確認なしで常に最新版を使用できます
 
+#### Claude Code on the Web での実行
+
+**Claude Code on the Web（claude.ai の Computer Use 機能）で本ガイドを実行する場合は、最初に以下のセットアップを完了してください**：
+
+1. **GitHub App のセットアップ**
+   - Claude Code が GitHub Actions で動作するための Long-Lived Token の取得
+   - GitHub Secrets への Token 登録（`CLAUDE_CODE_OAUTH_TOKEN`）
+   - Claude GitHub App のリポジトリへのインストール
+
+詳細な手順は **[install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md)** を参照してください。
+
+**重要**: このセットアップを完了してから、以降の手順（プロジェクト作成など）に進んでください。
+
 ---
 
 ## 開始前の必須質問
@@ -829,11 +842,14 @@ git push
 
 **重要**: 環境構築完了後、必ず GitHub Actions の設定をユーザーに説明してください。
 
-設定手順の詳細は [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクションを参照して、以下を説明してください：
+設定手順の詳細は以下を参照してください：
 
-1. EXPO_TOKEN の取得方法
-2. GitHub Secrets への登録方法
-3. Claude Code の場合は `/github-app-install` の実行
+1. **EXPO_TOKEN の取得方法と GitHub Secrets への登録**
+   - [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクション
+
+2. **Claude Code の設定**
+   - **Claude Code CLI の場合**: `/github-app-install` を実行
+   - **Claude Code on the Web の場合**: [install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md) を参照
 
 これにより、Pull Request をマージすると自動的に以下が実行されます：
 
