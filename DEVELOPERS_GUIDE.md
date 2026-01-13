@@ -149,9 +149,9 @@ PR タイトルまたはコミットメッセージに、以下のタグを含�
 
 ---
 
-## GitHub Actions の設定（オプション）
+## GitHub Actions の設定
 
-GitHub Actions で自動デプロイを設定する場合、以下の手順が必要です。
+GitHub Actions で自動デプロイを行うため、以下の手順で設定してください。
 
 ### 1. EXPO_TOKEN の取得
 

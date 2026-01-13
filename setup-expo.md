@@ -794,6 +794,23 @@ git push
 
 ---
 
+## GitHub Actions の設定
+
+**重要**: 環境構築完了後、必ず GitHub Actions の設定をユーザーに説明してください。
+
+設定手順の詳細は [DEVELOPERS_GUIDE.md](./DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクションを参照して、以下を説明してください：
+
+1. EXPO_TOKEN の取得方法
+2. GitHub Secrets への登録方法
+3. Claude Code の場合は `/github-app-install` の実行
+
+これにより、Pull Request をマージすると自動的に以下が実行されます：
+
+- **[ota]** タグ付き PR → EAS Update で JS バンドル配信
+- **[dist-dev-client]** タグ付き PR → EAS Build で APK/IPA ビルド
+
+---
+
 ## 参考リンク
 
 - [Expo Documentation](https://docs.expo.dev/)
