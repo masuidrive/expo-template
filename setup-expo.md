@@ -162,11 +162,9 @@ export default function App() {
 }
 ```
 
-### A-3. EAS 初期化と初回配信
+### A-3. EAS 初期化と設定ファイル生成
 
-#### A-3-1. EAS 初期化
-
-初回のみ、EAS プロジェクトを初期化します：
+#### A-3-1. EAS プロジェクトを初期化
 
 ```bash
 npx -y eas-cli@latest init --non-interactive --force
@@ -174,14 +172,43 @@ npx -y eas-cli@latest init --non-interactive --force
 
 これにより、`app.json` に EAS projectId が追加されます。
 
-#### A-3-2. 初回 Update を配信
+#### A-3-2. eas.json を生成
+
+```bash
+npx -y eas-cli@latest build:configure
+```
+
+対話的に質問されますが、プラットフォーム選択時は「All」を選択してください（**ビルドは実行されません**）。
+
+これにより：
+- `eas.json` が生成される（development, preview, production プロファイル）
+- GitHub Actions で必要な設定ファイルがコミット可能になる
+
+#### A-3-3. EAS Update を設定
+
+```bash
+npx -y eas-cli@latest update:configure
+```
+
+これにより：
+- `app.json` に `updates.url` と `runtimeVersion` が追加される
+- `eas.json` に各プロファイルの `channel` 設定が追加される
+
+#### A-3-4. 設定ファイルをコミット
+
+```bash
+git add app.json eas.json
+git commit -m "Add EAS configuration"
+git push
+```
+
+**重要**: GitHub Actions が eas.json を参照するため、必ずコミットしてください。
+
+#### A-3-5. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
-これにより：
-- `eas update --branch dev` が実行される
-- 初回実行時、`updates.url` と `runtimeVersion` が `app.json` に自動設定される
-- JS バンドルが EAS の CDN にアップロードされる
+これにより、JS バンドルが EAS の CDN にアップロードされます。
 
 ### A-4. Expo Go でアプリを確認
 
@@ -392,17 +419,29 @@ export default function App() {
 
 ---
 
-## B-6. 初回 Update を配信
+## B-6. 設定ファイルをコミット
+
+```bash
+git add app.json eas.json android/ ios/  # プラットフォームに応じて
+git commit -m "Add EAS and native configuration"
+git push
+```
+
+**重要**: GitHub Actions が eas.json と app.json を参照するため、必ずコミットしてください。
+
+---
+
+## B-7. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
 これにより：
 - `eas update --branch dev` が実行される
-- 初回実行時、`updates.url` と `runtimeVersion` が `app.json` に自動設定される
+- 初回実行時、`updates.url` と `runtimeVersion` が `app.json` に自動設定される（再コミット推奨）
 
 ---
 
-## B-7. Dev Client をビルド
+## B-8. Dev Client をビルド
 
 **Claude Code で `/dist-dev-client` を実行**します。
 
@@ -415,7 +454,7 @@ export default function App() {
 
 ---
 
-## B-8. 端末にインストール（ユーザー操作）
+## B-9. 端末にインストール（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -453,7 +492,7 @@ export default function App() {
 
 ---
 
-## B-9. アプリ起動と Update のロード（ユーザー操作）
+## B-10. アプリ起動と Update のロード（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -480,7 +519,7 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ---
 
-## B-10. 基本的な開発フロー
+## B-11. 基本的な開発フロー
 
 ### JS/UI のみの変更
 
@@ -506,11 +545,11 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ---
 
-### B-11. 開発サーバーの使用（オプション）
+### B-12. 開発サーバーの使用（オプション）
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
 
-**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（B-10）を使用してください。
+**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（B-11）を使用してください。
 
 #### 開発サーバーを起動
 
@@ -554,6 +593,11 @@ npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 # App.tsx を編集
 npx -y eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest build:configure  # eas.json 生成（ビルドなし）
+npx -y eas-cli@latest update:configure  # Update 設定
+git add app.json eas.json
+git commit -m "Add EAS configuration"
+git push
 
 # Claude Code で実行
 /ota  # Update を配信
@@ -602,6 +646,11 @@ npx -y eas-cli@latest init --non-interactive --force
 
 # eas.json を作成（プラットフォームに応じた設定）
 # App.tsx を編集
+
+# 設定ファイルをコミット
+git add app.json eas.json android/ ios/
+git commit -m "Add EAS and native configuration"
+git push
 
 # Claude Code で実行
 /ota              # 初回 Update 配信
