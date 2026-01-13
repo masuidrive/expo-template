@@ -92,7 +92,7 @@ npx -y eas-cli@latest login
 
 #### CI など非対話環境でのログイン
 
-CI環境（GitHub Actions など）や非対話環境でログインエラーが発生した場合は、`EXPO_TOKEN` を設定してください。
+CI環境（GitHub Actions など）や非対話環境でログインエラーが発生した場合は、`EXPO_TOKEN` を設定する必要があります。ユーザに下記の内容をURLなども含めて提示し、設定してもらってください。
 
 **EXPO_TOKEN の取得方法**:
 1. https://expo.dev/accounts/[account]/settings/access-tokens にアクセス
