@@ -92,7 +92,7 @@ npx -y eas-cli@latest login
 
 #### CI など非対話環境でのログイン
 
-CI環境（GitHub Actions など）や非対話環境でログインエラーが発生した場合は、`EXPO_TOKEN` を設定する必要があります。ユーザに下記の内容をURLなども含めて提示し、設定してもらってください。
+CI環境（GitHub Actions など）や非対話環境でログインエラーが発生した場合は、`eas login`が実行できないため、環境変数 `EXPO_TOKEN` を設定する必要があります。ユーザに下記の内容をURLなども含めて提示し、設定してもらってください。
 
 **EXPO_TOKEN の取得方法**:
 1. https://expo.dev/accounts/[account]/settings/access-tokens にアクセス
@@ -100,15 +100,19 @@ CI環境（GitHub Actions など）や非対話環境でログインエラーが
 3. トークン名を入力（例: `github-actions`）
 4. トークンをコピー
 
-**GitHub で使用する場合**:
+**今の処理がGitHub Copilot上で行われている場合**:
 1. リポジトリの Settings → Secrets and variables → Actions に移動
    - URL: `https://github.com/[owner]/[repo]/settings/secrets/actions`
 2. 「New repository secret」をクリック
 3. Name: `EXPO_TOKEN`
 4. Secret: コピーしたトークンを貼り付け
 5. 「Add secret」をクリック
+6. ユーザが「EXPO_TOKENの設定が完了した」といった後に、「`eas login`以後のコマンド一気に実行して全てをcommitする`setup-eas workflow`」を作ってコミットして、その実行を待ってください。　https://github.com/[OWNER]/[REPO]/actions/workflows/setup-eas.yml で進捗がみれると思います
+7. `setup-eas workflow`を削除してコミットします
 
 詳細は [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクションを参照してください。
+
+
 
 **ローカル環境で使用する場合**:
 ```bash
