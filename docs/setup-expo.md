@@ -1,7 +1,9 @@
 # Expo によるモバイルアプリ開発環境構築
 
-
-以後のドキュメントを読み、ここにExpoを使ったモバイル開発環境を構築すること
+## 指示
+以後のドキュメントを読み、ここにExpoを使ったモバイル開発環境を構築すること。
+エラーなどで作業が進まない場合は、エラー内容をユーザに提示してユーザと共に解決して進めるように。Optional以外について勝手に飛ばして作業を進めないように。
+ユーザへの質問はまとめて行わず、一つずつ行なってください。
 
 ## エラー発生時の対処方針
 
@@ -76,7 +78,7 @@
 
 ### Expo Go および Dev Client 共通
 
-事前に Expo アカウントでログインしておいてください：
+**必須アクション**: ログインされていない場合は、ユーザーにログインを促すか EXPO_TOKEN を設定してください。
 
 ```bash
 # ログイン状態を確認
@@ -87,6 +89,31 @@ npx -y eas-cli@latest login
 ```
 
 **Expo アカウント**: https://expo.dev でアカウント作成が必要です。
+
+#### CI など非対話環境でのログイン
+
+CI環境（GitHub Actions など）や非対話環境でログインエラーが発生した場合は、`EXPO_TOKEN` を設定してください。
+
+**EXPO_TOKEN の取得方法**:
+1. https://expo.dev/accounts/[account]/settings/access-tokens にアクセス
+2. 「Create Token」をクリック
+3. トークン名を入力（例: `github-actions`）
+4. トークンをコピー
+
+**GitHub で使用する場合**:
+1. リポジトリの Settings → Secrets and variables → Actions に移動
+   - URL: `https://github.com/[owner]/[repo]/settings/secrets/actions`
+2. 「New repository secret」をクリック
+3. Name: `EXPO_TOKEN`
+4. Secret: コピーしたトークンを貼り付け
+5. 「Add secret」をクリック
+
+詳細は [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクションを参照してください。
+
+**ローカル環境で使用する場合**:
+```bash
+export EXPO_TOKEN=your_token_here
+```
 
 **理由**:
 - Expo Go でも EAS Update（`/ota` コマンド）を使用するため、Expo アカウントが必要
