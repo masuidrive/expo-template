@@ -102,7 +102,7 @@ CI環境（GitHub Actions など）や非対話環境でログインエラーが
 
 **GitHub Secrets への登録（Claude Code や CI 環境で使用する場合）**:
 1. リポジトリの Settings → Secrets and variables → Actions に移動
-   - URL: `https://github.com/[owner]/[repo]/settings/secrets/actions`
+   - URL: `https://github.com/[OWNER]/[REPO]/settings/secrets/actions`
 2. 「New repository secret」をクリック
 3. Name: `EXPO_TOKEN`
 4. Secret: コピーしたトークンを貼り付け
@@ -120,16 +120,20 @@ export EXPO_TOKEN=your_token_here
 - Dev Client では EAS Build と EAS Update の両方を使用するため同様に必要
 - `npx -y eas-cli@latest` を使うことで、確認なしで常に最新版を使用できます
 
-#### Claude Code on the Web での実行
+## GitHub Actions の設定
 
-**Claude Code on the Web（claude.ai の Computer Use 機能）で本ガイドを実行する場合は、最初に以下のセットアップを完了してください**：
+1. **EXPO_TOKEN の取得方法と GitHub Secrets への登録**
+   - [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクション
 
-1. **GitHub App のセットアップ**
-   - Claude Code が GitHub Actions で動作するための Long-Lived Token の取得
-   - GitHub Secrets への Token 登録（`CLAUDE_CODE_OAUTH_TOKEN`）
-   - Claude GitHub App のリポジトリへのインストール
+2. **Claude Code の設定**
+   - **環境変数 `CLAUDE_CODE_REMOTE=true` の場合**: [install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md) を参照
+   - **Claude Code CLI の場合**: `/github-app-install` を実行
 
-詳細な手順は **[install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md)** を参照してください。
+これにより、Pull Request をマージすると自動的に以下が実行されます：
+
+- **[ota]** タグ付き PR → EAS Update で JS バンドル配信
+- **[dist-dev-client]** タグ付き PR → EAS Build で APK/IPA ビルド
+
 
 **重要**: このセットアップを完了してから、以降の手順（プロジェクト作成など）に進んでください。
 
@@ -831,26 +835,6 @@ git push
 逆に以下の場合は基本フロー（`/ota`）を使用してください：
 - Sandbox 環境（Claude Code on the Web など）で開発している場合
 - 開発サーバーを連続的に起動できない環境
-
----
-
-## GitHub Actions の設定
-
-**重要**: 環境構築完了後、必ず GitHub Actions の設定をユーザーに説明してください。
-
-設定手順の詳細は以下を参照してください：
-
-1. **EXPO_TOKEN の取得方法と GitHub Secrets への登録**
-   - [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクション
-
-2. **Claude Code の設定**
-   - **Claude Code CLI の場合**: `/github-app-install` を実行
-   - **Claude Code on the Web の場合**: [install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md) を参照
-
-これにより、Pull Request をマージすると自動的に以下が実行されます：
-
-- **[ota]** タグ付き PR → EAS Update で JS バンドル配信
-- **[dist-dev-client]** タグ付き PR → EAS Build で APK/IPA ビルド
 
 ---
 
