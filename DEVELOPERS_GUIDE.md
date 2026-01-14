@@ -1,18 +1,8 @@
 # Developer's Guide
 
-コーディングエージェント（Claude Code など）を使った Expo 開発ガイド
+**環境構築後に参照する開発リファレンス**
 
-## 基礎知識
-
-### Expo Go vs Dev Client
-
-- **Expo Go**: App Store から即インストール、標準 API のみ、学習・プロトタイプ向け
-- **Dev Client**: 一度ビルド必要、カスタムネイティブモジュール使用可、本格開発向け
-
-**重要**: **Expo Go でも EAS Update (OTA) が使えます**
-- `/ota` コマンドで JS バンドルを配信可能
-- Expo Go アプリの Extensions タブから実行できる
-- Dev Client と同様に OTA による更新が可能
+環境構築がまだの場合は、Claude Code で `@docs/setup-expo.md` を実行してください。
 
 ---
 

@@ -1,22 +1,43 @@
 # expo-template
 
-Expo Dev Client + EAS Update のテンプレートプロジェクト。Claude Code のカスタムスキルを使った効率的な開発フローを提供します。
+Expo + EAS Update + Claude Code による効率的なモバイルアプリ開発テンプレート
 
-## プロジェクト概要
+## このテンプレートでできること
 
-このプロジェクトは、Expo を使った iOS/Android アプリ開発のテンプレートです。
+- **Dev Client**: カスタムネイティブモジュールを使った本格開発
+- **EAS Update (OTA)**: JS変更を再ビルドなしで即座に配信
+- **GitHub Actions**: PR マージで自動デプロイ
+- **Claude Code スキル**: `/ota`, `/dist-dev-client` で簡単デプロイ
 
-開発手法については、 [DEVELOPERS_GUIDE.md]を参照してください。
+## アーキテクチャ
 
-## Github + Actions + Claude Code で簡単に始める方法
+- **Dev Client**: ネイティブアプリを一度ビルド（実行環境）
+- **EAS Update**: JS バンドルを OTA 配信（再ビルド不要で更新）
+- **GitHub Actions**: タグベース自動デプロイ（`[ota]` / `[dist-dev-client]`）
 
-https://github.com/new?template_name=expo-template&template_owner=masuidrive で、このテンプレート使って新しいリポジトリを作ります。この画面の下の方にある"Jumpstart your project with Copilot"のPromptに下記のように入力してください。
+## クイックスタート
+
+### 1. テンプレートから新規リポジトリ作成
+
+https://github.com/new?template_name=expo-template&template_owner=masuidrive
+
+### 2. 環境構築
+
+リポジトリを clone して Claude Code で以下を実行：
 
 ```
-docs/setup-expo.mdの手順に従ってExpoプロジェクトをセットアップしてください
+@docs/setup-expo.md を読んで環境構築して
 ```
 
-Agentのページで設定が始まります。(Agentのページへは https://github.com/copilot から戻れます)
+### 3. 開発開始
+
+環境構築後は [DEVELOPERS_GUIDE.md](./DEVELOPERS_GUIDE.md) を参照して開発を進めてください。
+
+## ドキュメント
+
+- **[DEVELOPERS_GUIDE.md](./DEVELOPERS_GUIDE.md)** - 開発時リファレンス（スキルコマンド、PR ルール、FAQ）
+- **[docs/setup-expo.md](./docs/setup-expo.md)** - 初回環境構築（AI 向け）
+- **[docs/setup-gh-actions.md](./docs/setup-gh-actions.md)** - GitHub Actions 設定
 
 ## ライセンス
 
