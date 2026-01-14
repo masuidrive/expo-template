@@ -19,7 +19,10 @@
 - **Expo Go**: App Store から即インストール、標準 API のみ、学習・プロトタイプ向け
 - **Dev Client**: 一度ビルド必要、カスタムネイティブモジュール使用可、本格開発向け
 
-**共通点**: どちらも JS の更新は `/ota` で即座に配信可能
+**重要**: **Expo Go でも EAS Update (OTA) が使えます**
+- `/ota` コマンドで JS バンドルを配信可能
+- Expo Go アプリの Extensions タブから実行できる
+- Dev Client と同様に OTA による更新が可能
 
 ---
 
