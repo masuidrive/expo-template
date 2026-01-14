@@ -16,6 +16,8 @@ Expo + EAS Update + Claude Code による効率的なモバイルアプリ開発
 - **EAS Update**: JS バンドルを OTA 配信（再ビルド不要で更新）
 - **GitHub Actions**: タグベース自動デプロイ（`[ota]` / `[dist-dev-client]`）
 
+![workflow](docs/images/workflow.png)
+
 ## クイックスタート
 
 ### 1. テンプレートから新規リポジトリ作成
