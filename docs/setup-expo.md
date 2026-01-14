@@ -120,23 +120,6 @@ export EXPO_TOKEN=your_token_here
 - Dev Client では EAS Build と EAS Update の両方を使用するため同様に必要
 - `npx -y eas-cli@latest` を使うことで、確認なしで常に最新版を使用できます
 
-## GitHub Actions の設定
-
-1. **EXPO_TOKEN の取得方法と GitHub Secrets への登録**
-   - [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクション
-
-2. **Claude Code の設定**
-   - **環境変数 `CLAUDE_CODE_REMOTE=true` の場合**: [install-github-app-on-cc-on-web.md](./install-github-app-on-cc-on-web.md) を参照
-   - **Claude Code CLI の場合**: `/github-app-install` を実行
-
-これにより、Pull Request をマージすると自動的に以下が実行されます：
-
-- **[ota]** タグ付き PR → EAS Update で JS バンドル配信
-- **[dist-dev-client]** タグ付き PR → EAS Build で APK/IPA ビルド
-
-
-**重要**: このセットアップを完了してから、以降の手順（プロジェクト作成など）に進んでください。
-
 ---
 
 ## 開始前の必須質問
@@ -328,8 +311,6 @@ git push
 ### A-7. 開発サーバーの使用（オプション）
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
-
-**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（A-6）を使用してください。
 
 #### 開発サーバーを起動
 
@@ -677,8 +658,6 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
 
-**重要**: Sandbox 環境（Claude Code on the Web など）では開発サーバーを連続的に起動できないため、基本的な開発フロー（B-12）を使用してください。
-
 #### 開発サーバーを起動
 
 **Claude Code で `/dev-server` を実行**します。
@@ -713,7 +692,7 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ### A. Expo Go の場合
 
-**基本フロー（Sandbox 環境推奨）**:
+**基本フロー**:
 
 ```bash
 # 初回セットアップ
@@ -739,7 +718,7 @@ git push
 # - Expo Go で Extensions タブから Update を選択
 ```
 
-**オプション: 開発サーバー使用（ローカル環境のみ）**:
+**オプション: 開発サーバー使用**:
 
 ```bash
 # Claude Code で実行
@@ -790,7 +769,7 @@ git push
 # - または /dist-dev-client を実行（ネイティブ変更がある場合）
 ```
 
-**オプション: 開発サーバー使用（ローカル環境のみ）**:
+**オプション: 開発サーバー使用**:
 
 ```bash
 # Claude Code で実行
@@ -831,10 +810,6 @@ git push
 **A**: 開発サーバーは以下の場合に有効です：
 - ローカル環境で開発している場合
 - 頻繁にコードを変更する場合（Hot Reload で即座に反映）
-
-逆に以下の場合は基本フロー（`/ota`）を使用してください：
-- Sandbox 環境（Claude Code on the Web など）で開発している場合
-- 開発サーバーを連続的に起動できない環境
 
 ---
 
