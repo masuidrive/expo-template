@@ -2,16 +2,6 @@
 
 コーディングエージェント（Claude Code など）を使った Expo 開発ガイド
 
-## 環境構築
-
-最初に環境構築を行ってください:
-
-```
-@docs/setup-expo.md に従って環境構築して
-```
-
----
-
 ## 基礎知識
 
 ### Expo Go vs Dev Client
