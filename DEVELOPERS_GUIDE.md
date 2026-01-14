@@ -60,17 +60,6 @@ PR タイトルまたはコミットメッセージにタグを含めてくだ�
 
 ---
 
-## GitHub Actions の設定
-
-GitHub Actions で自動デプロイを設定する方法は [docs/setup-gh-actions.md](./docs/setup-gh-actions.md) を参照してください。
-
-**概要**:
-1. EXPO_TOKEN を GitHub Secrets に登録
-2. Claude Code で `/install-github-app` を実行
-3. PR に `[ota]` または `[dist-dev-client]` タグを含める
-
----
-
 ## よくある質問
 
 ### Q1. Extensions タブに Update が表示されない
@@ -90,6 +79,10 @@ GitHub Actions で自動デプロイを設定する方法は [docs/setup-gh-acti
 ### Q4. ビルド待ち時間が長い
 
 **A**: 無料プランではキュー時間が長くなります。バックグラウンド実行を活用してください。
+
+### Q5. GitHub Actions が発動しない
+
+**A**: GitHub Actions の設定は [docs/setup-gh-actions.md](./docs/setup-gh-actions.md) を参照してください。
 
 ---
 
