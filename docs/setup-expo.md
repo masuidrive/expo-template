@@ -30,7 +30,7 @@
 
 ## 概要
 
-このガイドでは、Expo を使った開発環境を構築します。開発方式は2つあり、プロジェクトの要件に応じて選択します。
+このガイドでは、ExpoとGitHub を使った開発環境を構築します。Expoの開発方式は2つあり、プロジェクトの要件に応じて選択します。
 
 ### 開発方式の選択
 
@@ -100,20 +100,16 @@ CI環境（GitHub Actions など）や非対話環境でログインエラーが
 3. トークン名を入力（例: `github-actions`）
 4. トークンをコピー
 
-**GitHub Secrets への登録（Claude Code や CI 環境で使用する場合）**:
+**GitHub Secrets への登録**:
 1. リポジトリの Settings → Secrets and variables → Actions に移動
    - URL: `https://github.com/[OWNER]/[REPO]/settings/secrets/actions`
+   - `[OWNER]/[REPO]`は`git remote`などから情報取得して埋めてください
 2. 「New repository secret」をクリック
 3. Name: `EXPO_TOKEN`
 4. Secret: コピーしたトークンを貼り付け
 5. 「Add secret」をクリック
 
 詳細は [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「GitHub Actions の設定」セクションを参照してください。
-
-**ローカル環境で使用する場合**:
-```bash
-export EXPO_TOKEN=your_token_here
-```
 
 **理由**:
 - Expo Go でも EAS Update（`/ota` コマンド）を使用するため、Expo アカウントが必要
@@ -130,6 +126,7 @@ export EXPO_TOKEN=your_token_here
 
 作成するプロジェクトの名前を決めてください（例: `hello-world`, `my-app`）。
 例を選択肢に出さないので、AskUserQuestion は使わず聞いてください。
+その後、README.mdのタイトルが`expo-template`だった場合、プロジェクト名に書き換えてください。
 
 ### 2. 開発方式
 
@@ -171,7 +168,7 @@ npx create-expo-app@latest APPNAME --template blank-typescript
 cd APPNAME
 ```
 
-**APPNAME** は任意のプロジェクト名に置き換えてください（例: `hello-world`）。
+**APPNAME** は先ほどユーザに聞いたアプリ名に置き換えてください。
 
 ### A-2. GitHub Actions のディレクトリ名を修正
 
@@ -628,194 +625,8 @@ Dev Client（`developmentClient: true`）は複数の Update を切り替えて�
 
 ---
 
-## B-12. 基本的な開発フロー
+## 環境構築完了
 
-### JS/UI のみの変更
+環境構築が完了しました！
 
-1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
-2. **Claude Code で `/ota` を実行**
-
-**結果**:
-- 再ビルド不要
-- APK/IPA の再インストール不要
-- **アプリを再起動すると新しいバージョンが表示される**
-
-### ネイティブ変更がある場合
-
-以下の変更をした場合は再ビルドが必要です：
-
-- Intent handlers / deep links
-- Permissions
-- Native modules
-- Package name / app icon
-- Build configuration (app.json affecting native)
-
-**Claude Code で `/dist-dev-client` を実行**してください。
-
----
-
-### B-13. 開発サーバーの使用（オプション）
-
-より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
-
-#### 開発サーバーを起動
-
-**Claude Code で `/dev-server` を実行**します。
-
-これにより：
-- `npx expo start --dev-client` がバックグラウンドで実行される
-- QR コードとアクセス用 URL が生成される
-
-#### Dev Client でアプリを確認
-
-**開発者に以下の手順を説明して実行してもらってください**：
-
-1. **Dev Client アプリを起動**
-
-2. **開発サーバーに接続**
-   - QR コードをスキャン、または
-   - アプリの開始画面で表示される URL を手動入力
-   - アプリが起動して「Hello World」が表示される
-
-#### 開発フロー
-
-1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
-2. 保存すると Dev Client アプリに自動的にリロードされる
-
-#### 開発サーバーを停止
-
-**Claude Code で `/dev-server stop` を実行**
-
----
-
-## まとめ
-
-### A. Expo Go の場合
-
-**基本フロー**:
-
-```bash
-# 初回セットアップ
-npx create-expo-app@latest APPNAME --template blank-typescript
-cd APPNAME
-# App.tsx を編集
-npx -y eas-cli@latest init --non-interactive --force
-npx -y eas-cli@latest build:configure  # eas.json 生成（ビルドなし）
-npx -y eas-cli@latest update:configure  # Update 設定
-git add app.json eas.json
-git commit -m "Add EAS configuration"
-git push
-
-# Claude Code で実行
-/ota  # Update を配信
-
-# Expo Go アプリで確認
-# - Extensions タブ → Login → Update を選択 → Open
-
-# 開発フロー
-# - コードを編集
-# - Claude Code で /ota を実行
-# - Expo Go で Extensions タブから Update を選択
-```
-
-**オプション: 開発サーバー使用**:
-
-```bash
-# Claude Code で実行
-/dev-server  # 開発サーバーを起動
-
-# Expo Go アプリで確認
-# - QR コードをスキャン
-# - コードを編集すると自動リロード
-
-# サーバー停止
-# - Claude Code で /dev-server stop を実行
-```
-
-### B. Dev Client の場合
-
-**基本フロー**:
-
-```bash
-# 初回セットアップ
-npx create-expo-app@latest APPNAME --template blank-typescript
-cd APPNAME
-npx expo install expo-dev-client expo-updates
-
-# プラットフォームに応じて
-npx expo prebuild --platform android  # Android のみ
-# または
-npx expo prebuild --platform ios      # iOS のみ
-# または
-npx expo prebuild --platform all      # 両方
-
-npx -y eas-cli@latest init --non-interactive --force
-
-# eas.json を作成（プラットフォームに応じた設定）
-# App.tsx を編集
-
-# 設定ファイルをコミット
-git add app.json eas.json android/ ios/
-git commit -m "Add EAS and native configuration"
-git push
-
-# Claude Code で実行
-/ota              # 初回 Update 配信
-/dist-dev-client  # ビルド（Android: APK、iOS: IPA）
-
-# 開発フロー
-# - コードを編集
-# - Claude Code で /ota を実行（JS のみの変更）
-# - または /dist-dev-client を実行（ネイティブ変更がある場合）
-```
-
-**オプション: 開発サーバー使用**:
-
-```bash
-# Claude Code で実行
-/dev-server  # 開発サーバーを起動
-
-# Dev Client アプリで確認
-# - QR コードをスキャンまたは URL 入力
-# - コードを編集すると自動リロード
-
-# サーバー停止
-# - Claude Code で /dev-server stop を実行
-```
-
----
-
-## よくある質問
-
-### Q1. アプリ起動時に開発サーバー接続画面が出る
-
-**A**: これは正常です。Dev Client は開発用なので、この画面が表示されます。Extensions タブから Update をロードしてください。
-
-### Q2. Extensions タブに Update が表示されない
-
-**A**: 以下を確認してください：
-- Extensions タブで Login しているか
-- `/ota` で Update を配信したか
-
-### Q3. Update 後も変更が反映されない
-
-**A**: 原因は runtimeVersion の不一致です。ネイティブ変更がある場合は `/dist-dev-client` で再ビルドしてください。
-
-### Q4. eas init がエラーになる
-
-**A**: `npx -y eas-cli@latest init --non-interactive --force` を使ってください。
-
-### Q5. 開発サーバーはいつ使うべきか？
-
-**A**: 開発サーバーは以下の場合に有効です：
-- ローカル環境で開発している場合
-- 頻繁にコードを変更する場合（Hot Reload で即座に反映）
-
----
-
-## 参考リンク
-
-- [Expo Documentation](https://docs.expo.dev/)
-- [EAS Build](https://docs.expo.dev/build/introduction/)
-- [EAS Update](https://docs.expo.dev/eas-update/introduction/)
-- [Dev Client](https://docs.expo.dev/develop/development-builds/introduction/)
+**次のステップ**: 開発フローの詳細、よくある質問、参考情報については [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) を参照してください。

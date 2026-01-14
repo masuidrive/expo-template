@@ -138,6 +138,162 @@ Dev Client APK/IPA をビルドして配信します。
 
 ---
 
+## 詳細な開発フロー
+
+### Dev Client: JS/UI のみの変更
+
+1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
+2. **Claude Code で `/ota` を実行**
+
+**結果**:
+- 再ビルド不要
+- APK/IPA の再インストール不要
+- **アプリを再起動すると新しいバージョンが表示される**
+
+### Dev Client: ネイティブ変更がある場合
+
+以下の変更をした場合は再ビルドが必要です：
+
+- Intent handlers / deep links
+- Permissions
+- Native modules
+- Package name / app icon
+- Build configuration (app.json affecting native)
+
+**Claude Code で `/dist-dev-client` を実行**してください。
+
+### 開発サーバーの使用（オプション）
+
+より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
+
+#### 開発サーバーを起動
+
+**Claude Code で `/dev-server` を実行**します。
+
+これにより：
+- `npx expo start --dev-client` がバックグラウンドで実行される（Dev Client の場合）
+- `npx expo start` がバックグラウンドで実行される（Expo Go の場合）
+- QR コードとアクセス用 URL が生成される
+
+#### Dev Client でアプリを確認
+
+**開発者に以下の手順を説明して実行してもらってください**：
+
+1. **Dev Client アプリを起動**
+
+2. **開発サーバーに接続**
+   - QR コードをスキャン、または
+   - アプリの開始画面で表示される URL を手動入力
+   - アプリが起動して「Hello World」が表示される
+
+#### 開発フロー
+
+1. `App.tsx` を編集（例: `<Text>Hello World v2</Text>`）
+2. 保存すると Dev Client アプリに自動的にリロードされる
+
+#### 開発サーバーを停止
+
+**Claude Code で `/dev-server stop` を実行**
+
+---
+
+## セットアップまとめ
+
+### A. Expo Go の場合
+
+**基本フロー**:
+
+```bash
+# 初回セットアップ
+npx create-expo-app@latest APPNAME --template blank-typescript
+cd APPNAME
+# App.tsx を編集
+npx -y eas-cli@latest init --non-interactive --force
+npx -y eas-cli@latest build:configure  # eas.json 生成（ビルドなし）
+npx -y eas-cli@latest update:configure  # Update 設定
+git add app.json eas.json
+git commit -m "Add EAS configuration"
+git push
+
+# Claude Code で実行
+/ota  # Update を配信
+
+# Expo Go アプリで確認
+# - Extensions タブ → Login → Update を選択 → Open
+
+# 開発フロー
+# - コードを編集
+# - Claude Code で /ota を実行
+# - Expo Go で Extensions タブから Update を選択
+```
+
+**オプション: 開発サーバー使用**:
+
+```bash
+# Claude Code で実行
+/dev-server  # 開発サーバーを起動
+
+# Expo Go アプリで確認
+# - QR コードをスキャン
+# - コードを編集すると自動リロード
+
+# サーバー停止
+# - Claude Code で /dev-server stop を実行
+```
+
+### B. Dev Client の場合
+
+**基本フロー**:
+
+```bash
+# 初回セットアップ
+npx create-expo-app@latest APPNAME --template blank-typescript
+cd APPNAME
+npx expo install expo-dev-client expo-updates
+
+# プラットフォームに応じて
+npx expo prebuild --platform android  # Android のみ
+# または
+npx expo prebuild --platform ios      # iOS のみ
+# または
+npx expo prebuild --platform all      # 両方
+
+npx -y eas-cli@latest init --non-interactive --force
+
+# eas.json を作成（プラットフォームに応じた設定）
+# App.tsx を編集
+
+# 設定ファイルをコミット
+git add app.json eas.json android/ ios/
+git commit -m "Add EAS and native configuration"
+git push
+
+# Claude Code で実行
+/ota              # 初回 Update 配信
+/dist-dev-client  # ビルド（Android: APK、iOS: IPA）
+
+# 開発フロー
+# - コードを編集
+# - Claude Code で /ota を実行（JS のみの変更）
+# - または /dist-dev-client を実行（ネイティブ変更がある場合）
+```
+
+**オプション: 開発サーバー使用**:
+
+```bash
+# Claude Code で実行
+/dev-server  # 開発サーバーを起動
+
+# Dev Client アプリで確認
+# - QR コードをスキャンまたは URL 入力
+# - コードを編集すると自動リロード
+
+# サーバー停止
+# - Claude Code で /dev-server stop を実行
+```
+
+---
+
 ## Pull Request ルール
 
 PR タイトルまたはコミットメッセージに、以下のタグを含めてください:
@@ -185,18 +341,53 @@ GitHub Actions で自動デプロイを行うため、以下の手順で設定�
 
 ## よくある質問
 
-**Q: /dev-server と /ota の違いは?**
-A: `/dev-server` はローカル開発用（即座に反映）、`/ota` は配信用（サーバー不要）
+### Q1. /dev-server と /ota の違いは?
 
-**Q: /ota と /dist-dev-client の使い分けは?**
-A: JS/UI 変更は `/ota`、ネイティブ変更は `/dist-dev-client`
+**A**: `/dev-server` はローカル開発用（即座に反映）、`/ota` は配信用（サーバー不要）
 
-**Q: Dev Client は必須?**
-A: いいえ。標準 API のみ使う場合は Expo Go で十分です。
+### Q2. /ota と /dist-dev-client の使い分けは?
 
-**Q: ビルド待ち時間が長い**
-A: 無料プランではキュー時間が長くなります。バックグラウンド実行を活用してください。
+**A**: JS/UI 変更は `/ota`、ネイティブ変更は `/dist-dev-client`
+
+### Q3. Dev Client は必須?
+
+**A**: いいえ。標準 API のみ使う場合は Expo Go で十分です。
+
+### Q4. ビルド待ち時間が長い
+
+**A**: 無料プランではキュー時間が長くなります。バックグラウンド実行を活用してください。
+
+### Q5. アプリ起動時に開発サーバー接続画面が出る
+
+**A**: これは正常です。Dev Client は開発用なので、この画面が表示されます。Extensions タブから Update をロードしてください。
+
+### Q6. Extensions タブに Update が表示されない
+
+**A**: 以下を確認してください：
+- Extensions タブで Login しているか
+- `/ota` で Update を配信したか
+
+### Q7. Update 後も変更が反映されない
+
+**A**: 原因は runtimeVersion の不一致です。ネイティブ変更がある場合は `/dist-dev-client` で再ビルドしてください。
+
+### Q8. eas init がエラーになる
+
+**A**: `npx -y eas-cli@latest init --non-interactive --force` を使ってください。
+
+### Q9. 開発サーバーはいつ使うべきか？
+
+**A**: 開発サーバーは以下の場合に有効です：
+- ローカル環境で開発している場合
+- 頻繁にコードを変更する場合（Hot Reload で即座に反映）
 
 ---
 
-詳細は [README.md](./README.md) と [CLAUDE.md](./CLAUDE.md) を参照してください。
+## 参考リンク
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [EAS Build](https://docs.expo.dev/build/introduction/)
+- [EAS Update](https://docs.expo.dev/eas-update/introduction/)
+- [Dev Client](https://docs.expo.dev/develop/development-builds/introduction/)
+- [README.md](./README.md)
+- [CLAUDE.md](./CLAUDE.md)
