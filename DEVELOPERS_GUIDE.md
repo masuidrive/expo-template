@@ -23,6 +23,15 @@
 
 ---
 
+## スキルコマンド
+
+- `/dev-server`: 開発サーバーの起動・停止（ホットリロード）
+- `/ota`: JS/UI 変更を EAS Update で配信（ネイティブビルド不要）
+- `/setup-dev-client`: Dev Client 環境のセットアップ
+- `/dist-dev-client`: Dev Client APK/IPA のビルドと配信
+
+---
+
 ## ネイティブ変更が必要なケース
 
 以下の変更には `/dist-dev-client` での再ビルドが必要です:
