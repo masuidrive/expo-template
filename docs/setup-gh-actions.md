@@ -2,6 +2,8 @@
 
 Pull Request を main にマージしたら GitHub Actions が EAS で自動デプロイする設定手順。
 
+**スキルコマンドの使い方**: [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) を参照してください。
+
 ---
 
 ## ゴール
@@ -44,13 +46,10 @@ Pull Request を main にマージしたら GitHub Actions が EAS で自動デ�
 
 PR の説明（body）に以下のタグを含めてください:
 
-### [ota] タグ
+- **[ota]**: JS/UI の変更のみ（EAS Update で配信）
+- **[dist-dev-client]**: ネイティブ変更（EAS Build で再ビルド）
 
-**用途**: JS/UI の変更のみ（UI、ロジック、API、スタイル）
-
-**動作**:
-- `eas update` で即座に配信
-- 無料・高速（数秒〜1分）
+**どちらを使うべきか**: [DEVELOPERS_GUIDE.md](../DEVELOPERS_GUIDE.md) の「ネイティブ変更が必要なケース」を参照してください。
 
 **例**:
 ```markdown
@@ -59,15 +58,6 @@ Fix login button styling
 [ota]
 ```
 
-### [dist-dev-client] タグ
-
-**用途**: ネイティブ変更（permissions、native modules、deep links、アイコン）
-
-**動作**:
-- `eas build` でビルド実行
-- ビルド回数を消費（5〜10分）
-
-**例**:
 ```markdown
 Add camera permission for photo upload
 
