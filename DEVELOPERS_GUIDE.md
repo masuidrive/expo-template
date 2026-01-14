@@ -62,21 +62,12 @@ PR タイトルまたはコミットメッセージにタグを含めてくだ�
 
 ## GitHub Actions の設定
 
-### 1. EXPO_TOKEN の取得と登録
+GitHub Actions で自動デプロイを設定する方法は [docs/setup-gh-actions.md](./docs/setup-gh-actions.md) を参照してください。
 
-1. https://expo.dev/accounts/[your-account]/settings/access-tokens でトークン発行
-2. GitHub リポジトリの **Settings > Secrets and variables > Actions > Secrets**
-3. **New repository secret**
-   - Name: `EXPO_TOKEN`
-   - Value: コピーしたトークン
-
-### 2. Claude Code で GitHub App をインストール
-
-```
-/install-github-app
-```
-
-これで PR マージ時に自動デプロイが実行されます。
+**概要**:
+1. EXPO_TOKEN を GitHub Secrets に登録
+2. Claude Code で `/install-github-app` を実行
+3. PR に `[ota]` または `[dist-dev-client]` タグを含める
 
 ---
 
