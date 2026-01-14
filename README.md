@@ -8,6 +8,7 @@ Expo + EAS Update + Claude Code による効率的なモバイルアプリ開発
 - **EAS Update (OTA)**: JS変更を再ビルドなしで即座に配信
 - **GitHub Actions**: PR マージで自動デプロイ
 - **Claude Code スキル**: `/ota`, `/dist-dev-client` で簡単デプロイ
+- **GitHub から Claude 呼び出し**: Issue/PR に `@claude` でメンション、自動実装
 
 ## アーキテクチャ
 

@@ -64,6 +64,10 @@ PR タイトルまたはコミットメッセージにタグを含めてくだ�
 
 **A**: GitHub Actions の設定は [docs/setup-gh-actions.md](./docs/setup-gh-actions.md) を参照してください。
 
+### Q6. GitHub Issue から Claude を呼び出せる?
+
+**A**: はい。Issue や PR コメントで `@claude 〜を実装して` とメンションすると、Claude が自動的に対応します。`/install-github-app` で設定が必要です。
+
 ---
 
 ## 参考リンク
