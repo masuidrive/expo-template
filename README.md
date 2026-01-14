@@ -4,6 +4,7 @@ Expo + EAS Update + Claude Code による効率的なモバイルアプリ開発
 
 ## このテンプレートでできること
 
+- **Expo Go**: Android/Appleの開発者アカウント不要のの簡易開発
 - **Dev Client**: カスタムネイティブモジュールを使った本格開発
 - **EAS Update (OTA)**: JS変更を再ビルドなしで即座に配信
 - **GitHub Actions**: PR マージで自動デプロイ
@@ -12,7 +13,7 @@ Expo + EAS Update + Claude Code による効率的なモバイルアプリ開発
 
 ## アーキテクチャ
 
-- **Dev Client**: ネイティブアプリを一度ビルド（実行環境）
+- **Dev Client**(Expo Go): ネイティブアプリを一度ビルド（実行環境）
 - **EAS Update**: JS バンドルを OTA 配信（再ビルド不要で更新）
 - **GitHub Actions**: タグベース自動デプロイ（`[ota]` / `[dist-dev-client]`）
 
