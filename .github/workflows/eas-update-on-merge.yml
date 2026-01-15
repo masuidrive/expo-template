@@ -7,9 +7,9 @@ on:
 
 jobs:
   eas_update:
-    # Run only if PR was merged AND doesn't have 'native' label
+    # Run only if PR was merged AND has [ota] tag in title or body
     if: |
-      github.event.pull_request.merged == true && contains(github.event.pull_request.body, '[ota]')
+      github.event.pull_request.merged == true && (contains(github.event.pull_request.title, '[ota]') || contains(github.event.pull_request.body, '[ota]'))
     runs-on: ubuntu-latest
     defaults:
       run:

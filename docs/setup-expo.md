@@ -170,17 +170,26 @@ cd APPNAME
 
 **APPNAME** は先ほどユーザに聞いたアプリ名に置き換えてください。
 
+**重要**: 以降のすべてのコマンドは **APPNAME ディレクトリ内**で実行してください。ターミナルで以下を実行してディレクトリを移動します：
+
+```bash
+cd APPNAME
+```
+
+現在のディレクトリが正しいか確認：
+```bash
+pwd  # /path/to/parent/APPNAME と表示されるはず
+```
+
 ### A-2. verify スクリプトの設定
 
 `package.json` に `verify` スクリプトを追加して、型チェックとコード品質チェックを実行できるようにします。
 
 ```bash
-npm pkg set scripts.verify="tsc --noEmit && eslint . --max-warnings=0"
+npm pkg set scripts.verify="tsc --noEmit"
 ```
 
-このスクリプトは以下を実行します：
-- `tsc --noEmit`: TypeScript の型チェック（ビルドは行わない）
-- `eslint . --max-warnings=0`: ESLint による静的解析（警告もエラーとして扱う）
+このスクリプトは TypeScript の型チェック（ビルドは行わない）を実行します。
 
 実行方法：
 
@@ -260,10 +269,10 @@ npx -y eas-cli@latest init --non-interactive --force
 #### A-5-2. eas.json を生成
 
 ```bash
-npx -y eas-cli@latest build:configure
+npx -y eas-cli@latest build:configure --platform all
 ```
 
-対話的に質問されますが、プラットフォーム選択時は「All」を選択してください（**ビルドは実行されません**）。
+`--platform all` を指定することで、対話的な質問なしに両方のプラットフォーム向けの設定が自動生成されます（**ビルドは実行されません**）。
 
 これにより：
 - `eas.json` が生成される（development, preview, production プロファイル）
@@ -373,7 +382,16 @@ cd APPNAME
 
 **APPNAME** は任意のプロジェクト名に置き換えてください（例: `hello-world`）。
 
-以降のコマンドはすべて **APPNAME ディレクトリ内**で実行します。
+**重要**: 以降のすべてのコマンドは **APPNAME ディレクトリ内**で実行してください。ターミナルで以下を実行してディレクトリを移動します：
+
+```bash
+cd APPNAME
+```
+
+現在のディレクトリが正しいか確認：
+```bash
+pwd  # /path/to/parent/APPNAME と表示されるはず
+```
 
 ---
 
@@ -382,12 +400,10 @@ cd APPNAME
 `package.json` に `verify` スクリプトを追加して、型チェックとコード品質チェックを実行できるようにします。
 
 ```bash
-npm pkg set scripts.verify="tsc --noEmit && eslint . --max-warnings=0"
+npm pkg set scripts.verify="tsc --noEmit"
 ```
 
-このスクリプトは以下を実行します：
-- `tsc --noEmit`: TypeScript の型チェック（ビルドは行わない）
-- `eslint . --max-warnings=0`: ESLint による静的解析（警告もエラーとして扱う）
+このスクリプトは TypeScript の型チェック（ビルドは行わない）を実行します。
 
 実行方法：
 

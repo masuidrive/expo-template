@@ -7,10 +7,10 @@ on:
 
 jobs:
   build_android:
-    # Run only if PR was merged AND has 'native' label
+    # Run only if PR was merged AND has [dist-dev-client] tag in title or body
     if: |
       github.event.pull_request.merged == true &&
-      contains(github.event.pull_request.body, '[dist-dev-client]')
+      (contains(github.event.pull_request.title, '[dist-dev-client]') || contains(github.event.pull_request.body, '[dist-dev-client]'))
     runs-on: ubuntu-latest
     defaults:
       run:
