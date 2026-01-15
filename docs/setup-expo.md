@@ -170,7 +170,27 @@ cd APPNAME
 
 **APPNAME** は先ほどユーザに聞いたアプリ名に置き換えてください。
 
-### A-2. GitHub Actions のディレクトリ名を修正
+### A-2. verify スクリプトの設定
+
+`package.json` に `verify` スクリプトを追加して、型チェックとコード品質チェックを実行できるようにします。
+
+```bash
+npm pkg set scripts.verify="tsc --noEmit && eslint . --max-warnings=0"
+```
+
+このスクリプトは以下を実行します：
+- `tsc --noEmit`: TypeScript の型チェック（ビルドは行わない）
+- `eslint . --max-warnings=0`: ESLint による静的解析（警告もエラーとして扱う）
+
+実行方法：
+
+```bash
+npm run verify
+```
+
+GitHub Actions でも自動的にこのスクリプトが実行されます。
+
+### A-3. GitHub Actions のディレクトリ名を修正
 
 **GitHub Actions を使用する場合のみ必要な手順です。**
 
@@ -211,7 +231,7 @@ git commit -m "Update workflow directory to match app name"
 git push
 ```
 
-### A-3. Hello World を作成
+### A-4. Hello World を作成
 
 `App.tsx` を編集（または作成）：
 
@@ -227,9 +247,9 @@ export default function App() {
 }
 ```
 
-### A-4. EAS 初期化と設定ファイル生成
+### A-5. EAS 初期化と設定ファイル生成
 
-#### A-4-1. EAS プロジェクトを初期化
+#### A-5-1. EAS プロジェクトを初期化
 
 ```bash
 npx -y eas-cli@latest init --non-interactive --force
@@ -237,7 +257,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 これにより、`app.json` に EAS projectId が追加されます。
 
-#### A-4-2. eas.json を生成
+#### A-5-2. eas.json を生成
 
 ```bash
 npx -y eas-cli@latest build:configure
@@ -249,7 +269,7 @@ npx -y eas-cli@latest build:configure
 - `eas.json` が生成される（development, preview, production プロファイル）
 - GitHub Actions で必要な設定ファイルがコミット可能になる
 
-#### A-4-3. EAS Update を設定
+#### A-5-3. EAS Update を設定
 
 ```bash
 npx -y eas-cli@latest update:configure
@@ -259,7 +279,7 @@ npx -y eas-cli@latest update:configure
 - `app.json` に `updates.url` と `runtimeVersion` が追加される
 - `eas.json` に各プロファイルの `channel` 設定が追加される
 
-#### A-4-4. 設定ファイルをコミット
+#### A-5-4. 設定ファイルをコミット
 
 ```bash
 git add app.json eas.json
@@ -269,13 +289,13 @@ git push
 
 **重要**: GitHub Actions が eas.json を参照するため、必ずコミットしてください。
 
-#### A-4-5. 初回 Update を配信
+#### A-5-5. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
 これにより、JS バンドルが EAS の CDN にアップロードされます。
 
-### A-5. Expo Go でアプリを確認
+### A-6. Expo Go でアプリを確認
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -292,7 +312,7 @@ git push
    - 表示された Update の **「Open」** をタップ
    - 「Hello World v1」が表示される
 
-### A-6. 基本的な開発フロー
+### A-7. 基本的な開発フロー
 
 #### JS/UI の変更（再配信）
 
@@ -305,7 +325,7 @@ git push
 
 ---
 
-### A-7. 開発サーバーの使用（オプション）
+### A-8. 開発サーバーの使用（オプション）
 
 より高速な開発サイクルが必要な場合、開発サーバーを起動して Hot Reload を有効にできます。
 
@@ -357,7 +377,29 @@ cd APPNAME
 
 ---
 
-## B-2. GitHub Actions のディレクトリ名を修正
+### B-2. verify スクリプトの設定
+
+`package.json` に `verify` スクリプトを追加して、型チェックとコード品質チェックを実行できるようにします。
+
+```bash
+npm pkg set scripts.verify="tsc --noEmit && eslint . --max-warnings=0"
+```
+
+このスクリプトは以下を実行します：
+- `tsc --noEmit`: TypeScript の型チェック（ビルドは行わない）
+- `eslint . --max-warnings=0`: ESLint による静的解析（警告もエラーとして扱う）
+
+実行方法：
+
+```bash
+npm run verify
+```
+
+GitHub Actions でも自動的にこのスクリプトが実行されます。
+
+---
+
+## B-3. GitHub Actions のディレクトリ名を修正
 
 **GitHub Actions を使用する場合のみ必要な手順です。**
 
@@ -400,7 +442,7 @@ git push
 
 ---
 
-## B-3. Dev Client と expo-updates をインストール
+## B-4. Dev Client と expo-updates をインストール
 
 ```bash
 npx expo install expo-dev-client expo-updates
@@ -411,7 +453,7 @@ npx expo install expo-dev-client expo-updates
 
 ---
 
-## B-4. EAS 初期化
+## B-5. EAS 初期化
 
 ### Android の場合
 
@@ -440,7 +482,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 ---
 
-## B-5. eas.json を作成
+## B-6. eas.json を作成
 
 プロジェクトルートに `eas.json` を作成：
 
@@ -507,7 +549,7 @@ npx -y eas-cli@latest init --non-interactive --force
 
 ---
 
-## B-6. Hello World を作成
+## B-7. Hello World を作成
 
 `App.tsx` を編集（または作成）：
 
@@ -525,7 +567,7 @@ export default function App() {
 
 ---
 
-## B-7. 設定ファイルをコミット
+## B-8. 設定ファイルをコミット
 
 ```bash
 git add app.json eas.json android/ ios/  # プラットフォームに応じて
@@ -537,7 +579,7 @@ git push
 
 ---
 
-## B-8. 初回 Update を配信
+## B-9. 初回 Update を配信
 
 **Claude Code で `/ota` を実行**します。
 
@@ -547,7 +589,7 @@ git push
 
 ---
 
-## B-9. Dev Client をビルド
+## B-10. Dev Client をビルド
 
 **Claude Code で `/dist-dev-client` を実行**します。
 
@@ -560,7 +602,7 @@ git push
 
 ---
 
-## B-10. 端末にインストール（ユーザー操作）
+## B-11. 端末にインストール（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
@@ -598,7 +640,7 @@ git push
 
 ---
 
-## B-11. アプリ起動と Update のロード（ユーザー操作）
+## B-12. アプリ起動と Update のロード（ユーザー操作）
 
 **開発者に以下の手順を説明して実行してもらってください**：
 
